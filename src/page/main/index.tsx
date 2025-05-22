@@ -1,5 +1,6 @@
 import React from "react";
 import LogoIcon from "../../assets/logo.svg?react";
+import Btn from "../../components/Btn";
 
 const Main = () => {
   return (
@@ -8,9 +9,7 @@ const Main = () => {
         <LogoIcon />
       </div>
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="w-[320px] h-[53px] bg-[#6488FF] rounded-lg flex items-center justify-center text-white text-center">
-          로그인
-        </div>
+        <Btn path="login" text="로그인" />
       </div>
     </div>
   );

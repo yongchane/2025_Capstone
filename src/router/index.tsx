@@ -14,8 +14,16 @@ const Place = lazy(
 const Search = lazy(
   () => import("../page/search") as Promise<{ default: React.ComponentType }>
 );
-// const Record = lazy(() => import("../page/record") as Promise<{ default: React.ComponentType }>);
-// const Statistic = lazy(() => import("../page/statistic") as Promise<{ default: React.ComponentType }>);
+const Font = lazy(
+  () =>
+    import("../page/login/font") as Promise<{ default: React.ComponentType }>
+);
+const Register = lazy(
+  () =>
+    import("../page/login/register") as Promise<{
+      default: React.ComponentType;
+    }>
+);
 import Layout from "../layout/Layout";
 
 const routes: RouteObject[] = [
@@ -31,7 +39,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "Login",
+        path: "login",
         element: (
           <Suspense fallback={<Loading />}>
             <Login />
@@ -39,7 +47,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "Place",
+        path: "place",
         element: (
           <Suspense fallback={<Loading />}>
             <Place />
@@ -47,10 +55,26 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "Search",
+        path: "search",
         element: (
           <Suspense fallback={<Loading />}>
             <Search />
+          </Suspense>
+        ),
+      },
+      {
+        path: "font",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Font />
+          </Suspense>
+        ),
+      },
+      {
+        path: "register",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Register />
           </Suspense>
         ),
       },
