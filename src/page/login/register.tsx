@@ -43,7 +43,7 @@ const Register = () => {
                 여자
               </SelectBox>
             </div>
-            <div className="pt-[169px]">
+            <div className="pt-[169px] hover:cursor-pointer">
               <Btn path="login" text="회원가입" />
             </div>
           </div>
