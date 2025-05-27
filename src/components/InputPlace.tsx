@@ -10,8 +10,10 @@ const InputPlaceComponent = styled.input`
 const InputPlace = () => {
   return (
     <div className="flex flex-col mt-[30px]">
-      <InputPlaceComponent placeholder="출발" />
-      <InputPlaceComponent placeholder="목적지" />
+      <div className="w-[320px] h-[140px] bg-[#ffffff] rounded-[12px]">
+        <InputPlaceComponent placeholder="출발" />
+        <InputPlaceComponent placeholder="목적지" />
+      </div>
     </div>
   );
 };
