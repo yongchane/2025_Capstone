@@ -13,7 +13,7 @@ const Login = () => {
         <InputBox placeholder="비밀번호 입력" />
       </div>
       <div className="flex flex-col items-center justify-center pt-[70px] hover:cursor-pointer">
-        <Btn path="font" text="로그인" />
+        <Btn path="home" text="로그인" />
       </div>
       <div
         className="text-[14px] text-gray-500 relative right-[-130px] mt-[29px] hover:cursor-pointer"

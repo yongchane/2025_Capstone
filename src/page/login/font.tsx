@@ -1,7 +1,7 @@
 import React from "react";
 
-const font = () => {
-  return <div>font</div>;
+const Font = () => {
+  return <div>Font</div>;
 };
 
-export default font;
+export default Font;

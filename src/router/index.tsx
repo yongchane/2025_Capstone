@@ -16,11 +16,11 @@ const Search = lazy(
 );
 const Font = lazy(
   () =>
-    import("../page/login/font") as Promise<{ default: React.ComponentType }>
+    import("../page/login/Font") as Promise<{ default: React.ComponentType }>
 );
 const Register = lazy(
   () =>
-    import("../page/login/register") as Promise<{
+    import("../page/login/Register") as Promise<{
       default: React.ComponentType;
     }>
 );
@@ -72,6 +72,14 @@ const routes: RouteObject[] = [
       },
       {
         path: "register",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Register />
+          </Suspense>
+        ),
+      },
+      {
+        path: "home",
         element: (
           <Suspense fallback={<Loading />}>
             <Register />
