@@ -1,12 +1,24 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useState } from "react";
+import Btn from "../../components/Btn";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [selectedGender, setSelectedGender] = useState<string>("");
+
   return (
     <div className="bg-[#F7FBFE] w-full h-screen flex flex-col items-center ">
-      <div className="w-[320px] text-[35px] font-bold pt-[104px]">간편하게</div>
+      <div
+        className="w-[320px] text-[35px] font-bold pt-[104px] flex  items-center hover:cursor-pointer"
+        onClick={() => {
+          navigate("/login");
+        }}
+      >
+        간편하게!
+      </div>
       <div className="flex flex-col items-center justify-center pt-[70px]">
-        <div className="bg-[#F7FBFE] w-full h-screen flex flex-col items-center gap-[30px]">
+        <div className="bg-[#F7FBFE] w-full h-full flex flex-col items-center gap-[30px]">
           <div>
             <Font>별명</Font>
             <InputBox placeholder="별명" />
@@ -14,6 +26,26 @@ const Register = () => {
           <div>
             <Font>나이</Font>
             <InputBox placeholder="나이" />
+          </div>
+          <div>
+            <Font>성별</Font>
+            <div className="flex gap-[10px]">
+              <SelectBox
+                isSelected={selectedGender === "남자"}
+                onClick={() => setSelectedGender("남자")}
+              >
+                남자
+              </SelectBox>
+              <SelectBox
+                isSelected={selectedGender === "여자"}
+                onClick={() => setSelectedGender("여자")}
+              >
+                여자
+              </SelectBox>
+            </div>
+            <div className="pt-[169px]">
+              <Btn path="login" text="회원가입" />
+            </div>
           </div>
         </div>
       </div>
@@ -41,4 +73,15 @@ const Font = styled.div`
   font-weight: 600;
   margin-left: 5px;
   margin-bottom: 10px;
+`;
+
+const SelectBox = styled.button<{ isSelected: boolean }>`
+  width: 155px;
+  height: 53px;
+  background-color: ${(props) => (props.isSelected ? "#6488FF" : "#ffffff")};
+  color: ${(props) => (props.isSelected ? "#ffffff" : "inherit")};
+  border-radius: 10px;
+  border: ${(props) =>
+    props.isSelected ? "1px solid #6488FF" : "1px solid #b3dbed"};
+  transition: all 0.3s ease;
 `;
