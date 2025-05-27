@@ -85,4 +85,9 @@ const SelectBox = styled.button<{ isSelected: boolean }>`
   border: ${(props) =>
     props.isSelected ? "1px solid #6488FF" : "1px solid #b3dbed"};
   transition: all 0.3s ease;
+  :hover {
+    cursor: pointer;
+    background-color: #6488ff;
+    color: #ffffff;
+  }
 `;
