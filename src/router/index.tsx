@@ -24,6 +24,13 @@ const Register = lazy(
       default: React.ComponentType;
     }>
 );
+const Home = lazy(
+  () =>
+    import("../page/main/Home") as Promise<{
+      default: React.ComponentType;
+    }>
+);
+
 import Layout from "../layout/Layout";
 
 const routes: RouteObject[] = [
@@ -82,7 +89,7 @@ const routes: RouteObject[] = [
         path: "home",
         element: (
           <Suspense fallback={<Loading />}>
-            <Register />
+            <Home />
           </Suspense>
         ),
       },

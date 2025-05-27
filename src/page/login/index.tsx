@@ -2,18 +2,21 @@ import React from "react";
 import styled from "@emotion/styled";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
+import Title from "../../components/Title";
+import { BackgroundWrapper } from "../../style/_theme";
+
 const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#F7FBFE] w-full h-screen flex flex-col items-center ">
-      <div className="w-[320px] text-[35px] font-bold pt-[104px]"> 로그인</div>
+    <BackgroundWrapper>
+      <Title title="로그인" />
       <div className="flex flex-col items-center justify-center pt-[70px]">
         <InputBox placeholder="아이디 입력" />
         <InputBox placeholder="비밀번호 입력" />
       </div>
       <div className="flex flex-col items-center justify-center pt-[70px] hover:cursor-pointer">
-        <Btn path="home" text="로그인" />
+        <Btn path="font" text="로그인" />
       </div>
       <div
         className="text-[14px] text-gray-500 relative right-[-130px] mt-[29px] hover:cursor-pointer"
@@ -23,7 +26,7 @@ const Login = () => {
       >
         회원가입
       </div>
-    </div>
+    </BackgroundWrapper>
   );
 };
 

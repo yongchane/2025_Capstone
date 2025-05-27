@@ -2,20 +2,21 @@ import styled from "@emotion/styled";
 import React, { useState } from "react";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
+import Title from "../../components/Title";
 
 const Register = () => {
   const navigate = useNavigate();
   const [selectedGender, setSelectedGender] = useState<string>("");
 
   return (
-    <div className="bg-[#F7FBFE] w-full h-screen flex flex-col items-center ">
+    <>
       <div
-        className="w-[320px] text-[35px] font-bold pt-[104px] flex  items-center hover:cursor-pointer"
+        className="hover:cursor-pointer"
         onClick={() => {
           navigate("/login");
         }}
       >
-        간편하게!
+        <Title title="간편하게!" />
       </div>
       <div className="flex flex-col items-center justify-center pt-[70px]">
         <div className="bg-[#F7FBFE] w-full h-full flex flex-col items-center gap-[30px]">
@@ -49,7 +50,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
