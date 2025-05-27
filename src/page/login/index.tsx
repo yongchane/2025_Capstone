@@ -3,13 +3,13 @@ import styled from "@emotion/styled";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title";
-import { BackgroundWrapper } from "../../style/_theme";
 
 const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <BackgroundWrapper>
+    <>
+      {/* 로그인 관련 연동 필요, 상태관리 */}
       <Title title="로그인" />
       <div className="flex flex-col items-center justify-center pt-[70px]">
         <InputBox placeholder="아이디 입력" />
@@ -26,7 +26,7 @@ const Login = () => {
       >
         회원가입
       </div>
-    </BackgroundWrapper>
+    </>
   );
 };
 

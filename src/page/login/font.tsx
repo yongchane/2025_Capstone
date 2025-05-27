@@ -13,6 +13,7 @@ const Font = () => {
   const navigate = useNavigate();
   return (
     <div>
+      {/* 폰트 전역 설정 필요 */}
       <Title title="글자 크기 조정" />
       <div className="mb-[30px]">원하는 글자 크기를 선택해 보세요!</div>
       {fontSizeOptions.map((option, index) => (

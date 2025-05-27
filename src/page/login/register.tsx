@@ -10,6 +10,7 @@ const Register = () => {
 
   return (
     <>
+      {/* 회원가입 연동 필요, 상태관리 */}
       <div
         className="hover:cursor-pointer"
         onClick={() => {
