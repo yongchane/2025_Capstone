@@ -6,23 +6,26 @@ import AtPlaceIcon from "../../assets/AtPlace.svg?react";
 import SearchIcon from "../../assets/SearchHome.svg?react";
 import AtSearchIcon from "../../assets/AtSearchHome.svg?react";
 import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
 
 const selectBoxOptions = [
   {
     title: "주변",
     icon: <PlaceIcon />,
     hoverIcon: <AtPlaceIcon />,
+    path: "/place",
   },
   {
     title: "길찾기",
     icon: <SearchIcon />,
     hoverIcon: <AtSearchIcon />,
+    path: "/search",
   },
 ];
 
 const Home = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+  const navigate = useNavigate();
   return (
     <div>
       {/* 로그인에 따른 닉네임 및 로직 구현 필요 */}
@@ -35,6 +38,9 @@ const Home = () => {
               key={index}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
+              onClick={() => {
+                navigate(option.path);
+              }}
             >
               {hoveredIndex === index ? option.hoverIcon : option.icon}
               <div>{option.title}</div>
