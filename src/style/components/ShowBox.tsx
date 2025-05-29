@@ -1,0 +1,20 @@
+import styled from "@emotion/styled";
+
+export const ShowBox = styled.div`
+  width: 325px;
+  height: 280px;
+  background-color: #6488ff;
+  border-radius: 15px 15px 0 0;
+  position: relative;
+  top: 0px;
+`;
+
+export const ShowBoxTop = styled.div`
+  width: 100%;
+  height: 238px;
+  background-color: #ffffff;
+  border-radius: 15px 15px 0 0;
+  position: absolute;
+  border-radius: 15px 15px 0 0;
+  bottom: 0px;
+`;

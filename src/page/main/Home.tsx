@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Title from "../../components/Title";
 import InputPlace from "../../components/InputPlace";
 import PlaceIcon from "../../assets/Place.svg?react";
@@ -7,6 +7,8 @@ import SearchIcon from "../../assets/SearchHome.svg?react";
 import AtSearchIcon from "../../assets/AtSearchHome.svg?react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
+import BusStop from "./components/BusStop";
+import Place from "./components/Place";
 
 const selectBoxOptions = [
   {
@@ -48,14 +50,9 @@ const Home = () => {
             </SelectBox>
           ))}
         </div>
-        <div className="mt-[60px]">
-          <ShowBox>
-            <div>
-              <div>
-                <div></div>
-              </div>
-            </div>
-          </ShowBox>
+        <div className="mt-[60px] flex flex-col gap-[40px]">
+          <BusStop />
+          <Place />
         </div>
       </div>
     </div>
@@ -83,11 +80,4 @@ const SelectBox = styled.div`
     background-color: #6488ff;
     color: #ffffff;
   }
-`;
-
-const ShowBox = styled.div`
-  width: 325px;
-  height: 280px;
-  background-color: #ffffff;
-  border-radius: 15px 15px 0 0;
 `;

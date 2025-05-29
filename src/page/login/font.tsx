@@ -1,4 +1,3 @@
-import React from "react";
 import Title from "../../components/Title";
 import { useNavigate } from "react-router-dom";
 import SelectBox from "../../components/SelectBox";

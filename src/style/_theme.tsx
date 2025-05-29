@@ -14,7 +14,7 @@ export const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
 
 export const Background = styled.div<{ $pathname: string }>`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: ${({ $pathname }) =>
     $pathname === "/home" ? "#E5F2FF" : "#f7fbff"};
   display: flex;

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import { useState } from "react";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title";

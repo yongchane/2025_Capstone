@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "@emotion/styled";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
