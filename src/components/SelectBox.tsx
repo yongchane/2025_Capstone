@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import styled from "@emotion/styled";
 
 const SelectBoxComponent = styled.div<{ $isSelected: boolean }>`
@@ -21,23 +22,35 @@ const SelectBoxComponent = styled.div<{ $isSelected: boolean }>`
 `;
 
 interface SelectBoxProps {
-  title: string;
+  title: ReactNode;
   subtitle: string;
   fontSize: number;
+  left: number;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-const SelectBox = ({ title, subtitle, fontSize }: SelectBoxProps) => {
+const SelectBox = ({
+  title,
+  subtitle,
+  fontSize,
+  left,
+  onMouseEnter,
+  onMouseLeave,
+}: SelectBoxProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
   return (
     <SelectBoxComponent
       $isSelected={isSelected}
       onClick={() => setIsSelected(!isSelected)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="w-[90px]">{title}</div>
       <div
-        className="relative left-[120px]"
-        style={{ fontSize: `${fontSize}px` }}
+        className="relative "
+        style={{ fontSize: `${fontSize}px`, left: `${left}px` }}
       >
         {subtitle}
       </div>

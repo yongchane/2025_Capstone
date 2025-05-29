@@ -30,6 +30,12 @@ const Home = lazy(
       default: React.ComponentType;
     }>
 );
+const Preference = lazy(
+  () =>
+    import("../page/search/Preference") as Promise<{
+      default: React.ComponentType;
+    }>
+);
 
 import Layout from "../layout/Layout";
 
@@ -90,6 +96,14 @@ const routes: RouteObject[] = [
         element: (
           <Suspense fallback={<Loading />}>
             <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "preference",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Preference />
           </Suspense>
         ),
       },

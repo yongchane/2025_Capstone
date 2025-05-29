@@ -21,7 +21,7 @@ const selectBoxOptions = [
     title: "길찾기",
     icon: <SearchIcon />,
     hoverIcon: <AtSearchIcon />,
-    path: "/search",
+    path: "/preference",
   },
 ];
 

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import SelectBox from "../../components/SelectBox";
 
 const fontSizeOptions = [
-  { title: "작은 텍스트", subtitle: "A", fontSize: 12 },
-  { title: "중간 텍스트", subtitle: "A", fontSize: 18 },
-  { title: "큰 텍스트", subtitle: "A", fontSize: 30 },
+  { title: "작은 텍스트", subtitle: "A", fontSize: 12, left: 120 },
+  { title: "중간 텍스트", subtitle: "A", fontSize: 18, left: 120 },
+  { title: "큰 텍스트", subtitle: "A", fontSize: 30, left: 120 },
 ];
 
 const Font = () => {
@@ -26,6 +26,7 @@ const Font = () => {
             title={option.title}
             subtitle={option.subtitle}
             fontSize={option.fontSize}
+            left={option.left}
           />
         </div>
       ))}
