@@ -14,10 +14,13 @@ export const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
 
 export const Background = styled.div<{ $pathname: string }>`
   width: 100%;
+  min-height: 100vh;
   height: 100%;
   background-color: ${({ $pathname }) =>
     $pathname === "/home" ? "#E5F2FF" : "#f7fbff"};
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 20px 40px;
+  overflow-y: auto;
 `;
