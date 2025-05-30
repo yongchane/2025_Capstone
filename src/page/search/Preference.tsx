@@ -7,6 +7,7 @@ import AtSubwayIcon from "../../assets/AtSubway.svg?react";
 import MapIcon from "../../assets/Map.svg?react";
 import AtMapIcon from "../../assets/AtMap.svg?react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // 맞춤형 작업 어느정도 완료시 없애는 뷰 띄우기 필요
 
@@ -36,6 +37,7 @@ const preferenceOptions = [
 
 const Preference = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const navigate = useNavigate();
   return (
     <div>
       <Title title="대중교통 선호도 조사" />
@@ -43,7 +45,12 @@ const Preference = () => {
       <div className=" text-[#A6A6A9] text-[10px]">
         ※ 대중교통 선호도 조사 과정이 끝나면 해당 선호도 조사는 사라집니다.
       </div>
-      <div className="flex flex-col gap-[10px] mt-[30px]">
+      <div
+        className="flex flex-col gap-[10px] mt-[30px]"
+        onClick={() => {
+          navigate("/search");
+        }}
+      >
         {preferenceOptions.map((option, index) => (
           <SelectBox
             key={index}

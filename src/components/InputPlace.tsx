@@ -4,10 +4,21 @@ import SearchIcon from "../assets/Search.svg?react";
 import StartIcon from "../assets/Start.svg?react";
 import EndIcon from "../assets/End.svg?react";
 import ExchangeIcon from "../assets/Exchange.svg?react";
+import useLocationStore from "../store/useLocationStore";
 
-const InputPlace = () => {
+interface InputPlaceProps {
+  width?: string;
+  comwidth?: string;
+}
+
+const InputPlace = ({
+  width = "320px",
+  comwidth = "250px",
+}: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const { end: endbtn, setEnd: setEndBtn } = useLocationStore();
+  const { start: startbtn, setStart: setStartBtn } = useLocationStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStart(e.target.value);
@@ -23,17 +34,26 @@ const InputPlace = () => {
     setEnd(tempStart);
   };
 
+  const handleSearch = () => {
+    setEndBtn(end);
+    setStartBtn(start);
+  };
+
   return (
     <div className="flex flex-col mt-[30px]">
-      <div className="w-[320px] h-[140px] bg-[#ffffff] rounded-[12px] flex flex-col items-center justify-center border border-[#B3DBED] relative">
+      <div
+        className="h-[140px] bg-[#ffffff] rounded-[12px] flex flex-col items-center justify-center border border-[#B3DBED] relative"
+        style={{ width }}
+      >
         <div className="flex items-center justify-between">
           <StartIcon />
           <InputPlaceComponent
             onChange={handleChange}
             placeholder="출발"
             value={start}
+            $comWidth={comwidth}
           />
-          <StyledButton>
+          <StyledButton onClick={handleSearch} value={startbtn}>
             <SearchIcon />
           </StyledButton>
         </div>
@@ -45,7 +65,10 @@ const InputPlace = () => {
           <ExchangeIcon />
         </StyledButton>
 
-        <div className="w-[280px] h-[1px] bg-[#E5E5E5]" />
+        <div
+          className="w-[280px] h-[1px] bg-[#E5E5E5]"
+          style={{ width: `calc(${width} - 40px)` }}
+        />
 
         <div className="flex items-center justify-between">
           <EndIcon />
@@ -53,8 +76,9 @@ const InputPlace = () => {
             onChange={handleChangeEnd}
             placeholder="목적지"
             value={end}
+            $comWidth={comwidth}
           />
-          <StyledButton>
+          <StyledButton onClick={handleSearch} value={endbtn}>
             <SearchIcon />
           </StyledButton>
         </div>
@@ -65,8 +89,8 @@ const InputPlace = () => {
 
 export default InputPlace;
 
-const InputPlaceComponent = styled.input`
-  width: 250px;
+const InputPlaceComponent = styled.input<{ $comWidth: string }>`
+  width: ${({ $comWidth }) => $comWidth};
   height: 65px;
   background-color: #ffffff;
   padding: 10px 15px;

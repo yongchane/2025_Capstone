@@ -17,7 +17,11 @@ export const Background = styled.div<{ $pathname: string }>`
   min-height: 100vh;
   height: 100%;
   background-color: ${({ $pathname }) =>
-    $pathname === "/home" ? "#E5F2FF" : "#f7fbff"};
+    $pathname === "/home"
+      ? "#E5F2FF"
+      : $pathname === "/search"
+      ? "#ffffff"
+      : "#f7fbff"};
   display: flex;
   flex-direction: column;
   align-items: center;
