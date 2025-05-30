@@ -53,7 +53,7 @@ const Search = () => {
       >
         <BackIcon />
       </div>
-      <InputPlace width="380px" comwidth="300px" />
+      <InputPlace width="380px" comwidth="300px" paths="/simple" />
       <div className="flex flex-col mt-[30px] relative">
         <div
           className="absolute right-0 hover:cursor-pointer flex items-center gap-[5px] text-[#4F94BF]"
@@ -73,22 +73,28 @@ const Search = () => {
           )}
         </div>
         <div className="mt-[16px] flex flex-col gap-[12px]">
-          {searchHistory.map((location, index) => (
-            <div
-              key={index}
-              className="flex items-center pl-[5px] pr-[5px] pt-[12px] pb-[12px] hover:bg-gray-100 rounded-md cursor-pointer"
-              onClick={() => handleLocationClick(location)}
-            >
-              <ClockIcon />
-              <span className="w-[95%] pl-[5%]">{location}</span>
-              <button
-                onClick={(e) => handleDeleteClick(e, location)}
-                className="px-2 border-none outline-none bg-[#ffffff]"
+          {searchHistory.length !== 0 ? (
+            searchHistory.map((location, index) => (
+              <div
+                key={index}
+                className="flex items-center pl-[5px] pr-[5px] pt-[12px] pb-[12px] hover:bg-gray-100 rounded-md cursor-pointer"
+                onClick={() => handleLocationClick(location)}
               >
-                ✕
-              </button>
+                <ClockIcon />
+                <span className="w-[95%] pl-[5%]">{location}</span>
+                <button
+                  onClick={(e) => handleDeleteClick(e, location)}
+                  className="px-2 border-none outline-none bg-[#ffffff]"
+                >
+                  ✕
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500">
+              최근기록이 없습니다.
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

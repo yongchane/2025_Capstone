@@ -36,6 +36,12 @@ const Preference = lazy(
       default: React.ComponentType;
     }>
 );
+const Simple = lazy(
+  () =>
+    import("../page/search/Simple") as Promise<{
+      default: React.ComponentType;
+    }>
+);
 
 import Layout from "../layout/Layout";
 
@@ -104,6 +110,14 @@ const routes: RouteObject[] = [
         element: (
           <Suspense fallback={<Loading />}>
             <Preference />
+          </Suspense>
+        ),
+      },
+      {
+        path: "simple",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Simple />
           </Suspense>
         ),
       },

@@ -5,20 +5,26 @@ import StartIcon from "../assets/Start.svg?react";
 import EndIcon from "../assets/End.svg?react";
 import ExchangeIcon from "../assets/Exchange.svg?react";
 import useLocationStore from "../store/useLocationStore";
+import { useNavigate } from "react-router-dom";
 
 interface InputPlaceProps {
   width?: string;
   comwidth?: string;
+  paths?: string;
 }
 
 const InputPlace = ({
   width = "320px",
   comwidth = "250px",
+  paths = location.pathname,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+
   const { end: endbtn, setEnd: setEndBtn } = useLocationStore();
   const { start: startbtn, setStart: setStartBtn } = useLocationStore();
+
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStart(e.target.value);
@@ -37,6 +43,12 @@ const InputPlace = ({
   const handleSearch = () => {
     setEndBtn(end);
     setStartBtn(start);
+
+    if (start === "" || end === "") {
+      alert("출발지 또는 목적지를 입력해주세요.");
+    } else {
+      navigate(paths);
+    }
   };
 
   return (
@@ -53,7 +65,7 @@ const InputPlace = ({
             value={start}
             $comWidth={comwidth}
           />
-          <StyledButton onClick={handleSearch} value={startbtn}>
+          <StyledButton onClick={handleSearch} value={startbtn} paths={paths}>
             <SearchIcon />
           </StyledButton>
         </div>
@@ -98,7 +110,7 @@ const InputPlaceComponent = styled.input<{ $comWidth: string }>`
   outline: none;
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ paths?: string }>`
   width: 30px;
   height: 30px;
   padding: 0;
