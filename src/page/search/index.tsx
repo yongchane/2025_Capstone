@@ -1,9 +1,15 @@
 import InputPlace from "../../components/InputPlace";
+
 import BackIcon from "../../assets/Back.svg?react";
+import LocationIcon from "../../assets/Location.svg?react";
+import ClockIcon from "../../assets/Clock.svg?react";
+
 import useLocationStore from "../../store/useLocationStore";
 import { getCurrentPosition } from "../../api/locationApi";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
+  const navigate = useNavigate();
   const { searchHistory } = useLocationStore();
   const {
     clearHistory,
@@ -41,18 +47,21 @@ const Search = () => {
 
   return (
     <div>
-      <div className="flex flex-col mt-[24px] justify-between">
+      <div
+        className="flex flex-col mt-[24px] justify-between"
+        onClick={() => navigate(-1)}
+      >
         <BackIcon />
       </div>
-      <InputPlace width="400px" comwidth="300px" />
+      <InputPlace width="380px" comwidth="300px" />
       <div className="flex flex-col mt-[30px] relative">
         <div
-          className="absolute right-0 hover:cursor-pointer"
+          className="absolute right-0 hover:cursor-pointer flex items-center gap-[5px] text-[#4F94BF]"
           onClick={handleCurrentLocation}
         >
-          현위치
+          <LocationIcon /> 현위치
         </div>
-        <div className="flex justify-between items-center mt-[40px]">
+        <div className="flex justify-between items-center mt-[50px] w-[100%] h-[30px]">
           <div className="text-[16px] font-bold">최근기록</div>
           {searchHistory.length > 0 && (
             <button
@@ -67,13 +76,14 @@ const Search = () => {
           {searchHistory.map((location, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-[12px] hover:bg-gray-100 rounded-md cursor-pointer"
+              className="flex items-center pl-[5px] pr-[5px] pt-[12px] pb-[12px] hover:bg-gray-100 rounded-md cursor-pointer"
               onClick={() => handleLocationClick(location)}
             >
-              <span>{location}</span>
+              <ClockIcon />
+              <span className="w-[95%] pl-[5%]">{location}</span>
               <button
                 onClick={(e) => handleDeleteClick(e, location)}
-                className="text-gray-400 hover:text-gray-600 px-2 border-none outline-none bg-[#ffffff]"
+                className="px-2 border-none outline-none bg-[#ffffff]"
               >
                 ✕
               </button>
