@@ -4,6 +4,10 @@ interface LocationState {
   start: string;
   end: string;
   searchHistory: string[];
+  xlocation: number;
+  ylocation: number;
+  setXlocation: (xlocation: number) => void;
+  setYlocation: (ylocation: number) => void;
   setStart: (start: string) => void;
   setEnd: (end: string) => void;
   addToHistory: (location: string) => void;
@@ -15,6 +19,10 @@ const useLocationStore = create<LocationState>((set) => ({
   start: "",
   end: "",
   searchHistory: [],
+  xlocation: 0,
+  ylocation: 0,
+  setXlocation: (xlocation) => set({ xlocation }),
+  setYlocation: (ylocation) => set({ ylocation }),
   setStart: (start) => set({ start }),
   setEnd: (end) => {
     set({ end });

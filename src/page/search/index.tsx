@@ -5,7 +5,13 @@ import { getCurrentPosition } from "../../api/locationApi";
 
 const Search = () => {
   const { searchHistory } = useLocationStore();
-  const { clearHistory, removeFromHistory, setEnd } = useLocationStore();
+  const {
+    clearHistory,
+    removeFromHistory,
+    setEnd,
+    setXlocation,
+    setYlocation,
+  } = useLocationStore();
 
   const handleLocationClick = (location: string) => {
     setEnd(location);
@@ -19,10 +25,11 @@ const Search = () => {
   const handleCurrentLocation = async () => {
     try {
       const position = await getCurrentPosition();
-      const locationString = `위도: ${position.latitude.toFixed(
-        6
-      )}, 경도: ${position.longitude.toFixed(6)}`;
-      setEnd(locationString);
+      const xlocation = Number(position.latitude.toFixed(6));
+      const ylocation = Number(position.longitude.toFixed(6));
+      setXlocation(xlocation);
+      setYlocation(ylocation);
+      console.log(xlocation, ylocation);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
