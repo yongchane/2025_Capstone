@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Btn = ({ path, text }: { path: string; text: string }) => {

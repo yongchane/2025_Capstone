@@ -3,11 +3,13 @@ import BackIcon from "../../assets/back.svg?react";
 import PlaceBox from "./components/PlaceBox";
 import Category from "./components/Category";
 import SearchIcon from "../../assets/search.svg?react";
+import { useNavigate } from "react-router-dom";
 const Place = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col h-screen">
       <div className="w-full pt-[20px] pb-[10px] pl-[10px] pr-[10px] flex flex-col justify-between items-center gap-[15px]">
-        <div className="w-full flex justify-start">
+        <div className="w-full flex justify-start" onClick={() => navigate(-1)}>
           <BackIcon />
         </div>
         <InputBoxContainer>
