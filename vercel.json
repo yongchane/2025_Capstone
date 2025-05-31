@@ -1,7 +1,0 @@
-{
-  "buildCommand": "yarn build",
-  "outputDirectory": "dist",
-  "installCommand": "yarn install --frozen-lockfile",
-  "devCommand": "yarn dev",
-  "framework": "vite"
-}
