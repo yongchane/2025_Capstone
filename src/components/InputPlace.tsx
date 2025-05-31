@@ -11,12 +11,16 @@ interface InputPlaceProps {
   width?: string;
   comwidth?: string;
   paths?: string;
+  simplestart?: string;
+  simpleend?: string;
 }
 
 const InputPlace = ({
   width = "320px",
   comwidth = "250px",
   paths = location.pathname,
+  simplestart,
+  simpleend,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -62,7 +66,7 @@ const InputPlace = ({
           <InputPlaceComponent
             onChange={handleChange}
             placeholder="출발"
-            value={start}
+            value={start || simplestart}
             $comWidth={comwidth}
           />
           <StyledButton onClick={handleSearch} value={startbtn} paths={paths}>
@@ -87,7 +91,7 @@ const InputPlace = ({
           <InputPlaceComponent
             onChange={handleChangeEnd}
             placeholder="목적지"
-            value={end}
+            value={end || simpleend}
             $comWidth={comwidth}
           />
           <StyledButton onClick={handleSearch} value={endbtn}>

@@ -25,6 +25,6 @@ export const Background = styled.div<{ $pathname: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px 40px;
+
   overflow-y: auto;
 `;
