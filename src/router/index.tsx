@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import Loading from "../components/Loading";
+import Font from "../page/login/Font";
+import Register from "../page/login/Register";
 
 const Main = lazy(
   () => import("../page/main") as Promise<{ default: React.ComponentType }>
@@ -14,16 +16,7 @@ const Place = lazy(
 const Search = lazy(
   () => import("../page/search") as Promise<{ default: React.ComponentType }>
 );
-const Font = lazy(
-  () =>
-    import("../page/login/Font") as Promise<{ default: React.ComponentType }>
-);
-const Register = lazy(
-  () =>
-    import("../page/login/Register") as Promise<{
-      default: React.ComponentType;
-    }>
-);
+
 const Home = lazy(
   () =>
     import("../page/main/Home") as Promise<{
@@ -83,19 +76,11 @@ const routes: RouteObject[] = [
       },
       {
         path: "font",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Font />
-          </Suspense>
-        ),
+        element: <Font />,
       },
       {
         path: "register",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Register />
-          </Suspense>
-        ),
+        element: <Register />,
       },
       {
         path: "home",
