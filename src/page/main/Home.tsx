@@ -50,7 +50,7 @@ const Home = () => {
             </SelectBox>
           ))}
         </div>
-        <div className="mt-[40px] flex flex-col gap-[30px] w-full">
+        <div className="mt-[40px] flex flex-col gap-[30px] w-full flex flex-col items-center">
           {/* 버스 정류장 연동 필요 */}
           <BusStop />
           {/* 장소 연동 필요 */}
