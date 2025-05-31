@@ -1,5 +1,5 @@
 const Place = () => {
-  return <div>place</div>;
+  return <div></div>;
 };
 
 export default Place;
