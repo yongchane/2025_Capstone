@@ -28,8 +28,12 @@ const InputPlace = ({
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
 
-  const { end: endbtn, setEnd: setEndBtn } = useLocationStore();
-  const { start: startbtn, setStart: setStartBtn } = useLocationStore();
+  const { end: endbtn, setEnd: setEndBtn, setSearchE } = useLocationStore();
+  const {
+    start: startbtn,
+    setStart: setStartBtn,
+    setSearchS,
+  } = useLocationStore();
 
   const navigate = useNavigate();
 
@@ -86,11 +90,31 @@ const InputPlace = ({
   }, [simpleend, onSimpleEndProcessed]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStart(e.target.value);
+    const value = e.target.value;
+    setStart(value);
+    // 타이핑할 때마다 store 업데이트하여 API 호출 트리거
+    if (value.trim()) {
+      setStartBtn(value);
+    }
   };
 
   const handleChangeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEnd(e.target.value);
+    const value = e.target.value;
+    setEnd(value);
+    // 타이핑할 때마다 store 업데이트하여 API 호출 트리거
+    if (value.trim()) {
+      setEndBtn(value);
+    }
+  };
+
+  // Enter 키 입력 처리 함수
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setEndBtn(end);
+      setStartBtn(start);
+      setSearchE(end);
+      setSearchS(start);
+    }
   };
 
   const handleExchange = () => {
@@ -102,6 +126,8 @@ const InputPlace = ({
   const handleSearch = () => {
     setEndBtn(end);
     setStartBtn(start);
+    setSearchE(end);
+    setSearchS(start);
 
     if (start === "" || end === "") {
       alert("출발지 또는 목적지를 입력해주세요.");
@@ -120,6 +146,7 @@ const InputPlace = ({
           <StartIcon />
           <InputPlaceComponent
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             placeholder="출발"
             value={start || simplestart || ""}
             $comWidth={comwidth}
@@ -145,6 +172,7 @@ const InputPlace = ({
           <EndIcon />
           <InputPlaceComponent
             onChange={handleChangeEnd}
+            onKeyDown={handleKeyDown}
             placeholder="목적지"
             value={end || simpleend || ""}
             $comWidth={comwidth}

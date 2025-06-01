@@ -3,9 +3,13 @@ import { create } from "zustand";
 interface LocationState {
   start: string;
   end: string;
+  searchE: string;
+  searchS: string;
   searchHistory: string[];
   xlocation: number | null;
   ylocation: number | null;
+  setSearchE: (searchE: string) => void;
+  setSearchS: (searchS: string) => void;
   setXlocation: (xlocation: number | null) => void;
   setYlocation: (ylocation: number | null) => void;
   setStart: (start: string) => void;
@@ -18,9 +22,33 @@ interface LocationState {
 const useLocationStore = create<LocationState>((set) => ({
   start: "",
   end: "",
+  searchE: "",
+  searchS: "",
   searchHistory: [],
   xlocation: null,
   ylocation: null,
+  setSearchE: (searchE) => {
+    if (searchE.trim()) {
+      set({ searchE });
+      set((state) => ({
+        searchHistory: [...new Set([searchE, ...state.searchHistory])].slice(
+          0,
+          10
+        ),
+      }));
+    }
+  },
+  setSearchS: (searchS) => {
+    if (searchS.trim()) {
+      set({ searchS });
+      set((state) => ({
+        searchHistory: [...new Set([searchS, ...state.searchHistory])].slice(
+          0,
+          10
+        ),
+      }));
+    }
+  },
   setXlocation: (xlocation) => {
     if (xlocation !== undefined && xlocation !== null) {
       set({ xlocation });
@@ -39,10 +67,6 @@ const useLocationStore = create<LocationState>((set) => ({
   setEnd: (end) => {
     if (end.trim()) {
       set({ end });
-      // 유효한 검색어만 히스토리에 추가
-      set((state) => ({
-        searchHistory: [...new Set([end, ...state.searchHistory])].slice(0, 10),
-      }));
     }
   },
   addToHistory: (location) => {
