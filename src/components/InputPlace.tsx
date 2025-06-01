@@ -15,6 +15,7 @@ interface InputPlaceProps {
   simplestart?: string;
   simpleend?: string;
   onSimpleEndProcessed?: () => void;
+  onClick?: () => void;
 }
 
 const InputPlace = ({
@@ -24,6 +25,7 @@ const InputPlace = ({
   simplestart,
   simpleend,
   onSimpleEndProcessed,
+  onClick,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -139,8 +141,9 @@ const InputPlace = ({
   return (
     <div className="flex flex-col mt-[30px]">
       <div
-        className="h-[140px] bg-[#ffffff] rounded-[12px] flex flex-col items-center justify-center border border-[#B3DBED] relative"
+        className="h-[140px] bg-[#ffffff] rounded-[12px] flex flex-col items-center justify-center border border-[#B3DBED] relative cursor-pointer"
         style={{ width }}
+        onClick={onClick}
       >
         <div className="flex items-center justify-between">
           <StartIcon />
