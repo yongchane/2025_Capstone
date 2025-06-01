@@ -8,6 +8,8 @@ interface LocationState {
   searchHistory: string[];
   xlocation: number | null;
   ylocation: number | null;
+  click: string;
+  setClick: (click: string) => void;
   setSearchE: (searchE: string) => void;
   setSearchS: (searchS: string) => void;
   setXlocation: (xlocation: number | null) => void;
@@ -27,6 +29,10 @@ const useLocationStore = create<LocationState>((set) => ({
   searchHistory: [],
   xlocation: null,
   ylocation: null,
+  click: "",
+  setClick: (click) => {
+    set({ click });
+  },
   setSearchE: (searchE) => {
     if (searchE.trim()) {
       set({ searchE });

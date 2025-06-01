@@ -15,6 +15,7 @@ interface InputPlaceProps {
   simplestart?: string;
   simpleend?: string;
   onSimpleEndProcessed?: () => void;
+  onSimpleStartProcessed?: () => void;
   onClick?: () => void;
 }
 
@@ -25,12 +26,18 @@ const InputPlace = ({
   simplestart,
   simpleend,
   onSimpleEndProcessed,
+  onSimpleStartProcessed,
   onClick,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
 
-  const { end: endbtn, setEnd: setEndBtn, setSearchE } = useLocationStore();
+  const {
+    end: endbtn,
+    setEnd: setEndBtn,
+    setSearchE,
+    setClick,
+  } = useLocationStore();
   const {
     start: startbtn,
     setStart: setStartBtn,
@@ -91,6 +98,17 @@ const InputPlace = ({
     }
   }, [simpleend, onSimpleEndProcessed]);
 
+  // simplestart props가 전달되면 start 값을 설정
+  useEffect(() => {
+    if (simplestart && simplestart.trim()) {
+      setStart(simplestart);
+      // props 처리가 완료되었음을 부모에게 알림
+      if (onSimpleStartProcessed) {
+        onSimpleStartProcessed();
+      }
+    }
+  }, [simplestart, onSimpleStartProcessed]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setStart(value);
@@ -138,6 +156,25 @@ const InputPlace = ({
     }
   };
 
+  // placeholder에 따라 click 값 설정하는 함수
+  const handleInputClick = (placeholder: string) => {
+    if (placeholder === "출발") {
+      setClick("출발");
+    } else if (placeholder === "목적지") {
+      setClick("목적지");
+    }
+    console.log(
+      "input clicked, placeholder:",
+      placeholder,
+      "click set to:",
+      placeholder
+    );
+    // 부모 컴포넌트의 onClick도 호출
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <div className="flex flex-col mt-[30px]">
       <div
@@ -153,6 +190,7 @@ const InputPlace = ({
             placeholder="출발"
             value={start || simplestart || ""}
             $comWidth={comwidth}
+            onClick={() => handleInputClick("출발")}
           />
           <StyledButton onClick={handleSearch} value={startbtn} paths={paths}>
             <SearchIcon />
@@ -179,6 +217,7 @@ const InputPlace = ({
             placeholder="목적지"
             value={end || simpleend || ""}
             $comWidth={comwidth}
+            onClick={() => handleInputClick("목적지")}
           />
           <StyledButton onClick={handleSearch} value={endbtn}>
             <SearchIcon />

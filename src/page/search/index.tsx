@@ -14,24 +14,34 @@ import { KakaoPlace } from "../../api/KakaoLocation";
 const Search = () => {
   const navigate = useNavigate();
   const [SearchEnd, setSearchEnd] = useState<string>("");
-  const [showHistory, setShowHistory] = useState<boolean>(true);
-  const [searchResults, setSearchResults] = useState<KakaoPlace[]>([]);
-  console.log(showHistory);
+  const [SearchStart, setSearchStart] = useState<string>("");
+  const [showHistory, setShowHistory] = useState<string>("기록");
+  const [startSearchResults, setStartSearchResults] = useState<KakaoPlace[]>(
+    []
+  ); // 출발지 검색 결과
+  const [endSearchResults, setEndSearchResults] = useState<KakaoPlace[]>([]); // 목적지 검색 결과
   const { searchHistory } = useLocationStore();
   const {
     clearHistory,
     removeFromHistory,
     setEnd,
+    setStart,
     setXlocation,
     setYlocation,
     start: searchStart,
     end: searchEndValue,
+    click,
   } = useLocationStore();
 
+  // 입력 시 검색 결과 가져오기
   useEffect(() => {
-    const searchLocation = async (query: string) => {
+    const searchLocation = async (query: string, type: "start" | "end") => {
       if (!query.trim()) {
-        setSearchResults([]);
+        if (type === "start") {
+          setStartSearchResults([]);
+        } else {
+          setEndSearchResults([]);
+        }
         return;
       }
 
@@ -40,31 +50,51 @@ const Search = () => {
           query: query,
           size: 5,
         });
-        setSearchResults(result.documents);
+
+        if (type === "start") {
+          setStartSearchResults(result.documents);
+        } else {
+          setEndSearchResults(result.documents);
+        }
+        console.log(`${type} 검색 결과:`, result.documents);
       } catch (error) {
-        console.error("검색 실패:", error);
-        setSearchResults([]);
+        console.error(`${type} 검색 실패:`, error);
+        if (type === "start") {
+          setStartSearchResults([]);
+        } else {
+          setEndSearchResults([]);
+        }
       }
     };
 
     if (searchStart) {
-      searchLocation(searchStart);
-    } else if (searchEndValue) {
-      searchLocation(searchEndValue);
+      searchLocation(searchStart, "start");
+    }
+    if (searchEndValue) {
+      searchLocation(searchEndValue, "end");
     }
   }, [searchStart, searchEndValue]);
 
   const handleLocationClick = (location: string) => {
-    setEnd(location);
-    setSearchEnd(location);
+    if (click === "출발") {
+      setStart(location);
+    } else if (click === "목적지") {
+      setEnd(location);
+      setSearchEnd(location);
+    }
   };
 
   const handleSimpleEndProcessed = () => {
     setSearchEnd("");
   };
 
+  const handleSimpleStartProcessed = () => {
+    setSearchStart("");
+  };
+
   const handleInputPlaceClick = () => {
-    setShowHistory(false);
+    setShowHistory(click);
+    console.log("click", click, "showHistory", showHistory);
   };
 
   const handleDeleteClick = (e: React.MouseEvent, location: string) => {
@@ -72,6 +102,7 @@ const Search = () => {
     removeFromHistory(location);
   };
 
+  // 현재 위치 가져오기
   const handleCurrentLocation = async () => {
     try {
       const position = await getCurrentPosition();
@@ -90,9 +121,14 @@ const Search = () => {
   };
 
   const handleSearchResultClick = (place: KakaoPlace) => {
-    setEnd(place.place_name);
-    setSearchEnd(place.place_name);
-    setShowHistory(true);
+    if (click === "출발") {
+      setStart(place.place_name);
+      setSearchStart(place.place_name);
+    } else if (click === "목적지") {
+      setEnd(place.place_name);
+      setSearchEnd(place.place_name);
+    }
+    setShowHistory("기록");
   };
 
   return (
@@ -108,10 +144,12 @@ const Search = () => {
         comwidth="300px"
         paths="/simple"
         simpleend={SearchEnd}
+        simplestart={SearchStart}
         onSimpleEndProcessed={handleSimpleEndProcessed}
+        onSimpleStartProcessed={handleSimpleStartProcessed}
         onClick={handleInputPlaceClick}
       />
-      {showHistory === true ? (
+      {showHistory === "기록" ? (
         <div className="flex flex-col mt-[30px] relative">
           <div
             className="absolute right-0 hover:cursor-pointer flex items-center gap-[5px] text-[#4F94BF]"
@@ -157,10 +195,36 @@ const Search = () => {
         </div>
       ) : (
         <div className="flex flex-col mt-[30px] relative">
-          <div className="text-[16px] font-bold mb-[16px]">검색 결과</div>
+          <div className="text-[16px] font-bold mb-[16px]">
+            {click === "출발" ? "출발지 검색 결과" : "목적지 검색 결과"}
+          </div>
           <div className="flex flex-col gap-[12px]">
-            {searchResults.length > 0 ? (
-              searchResults.map((place, index) => (
+            {click === "출발" ? (
+              startSearchResults.length > 0 ? (
+                startSearchResults.map((place, index) => (
+                  <div
+                    key={place.id || index}
+                    className="flex flex-col p-[12px] hover:bg-gray-100 rounded-md cursor-pointer border border-gray-200"
+                    onClick={() => handleSearchResultClick(place)}
+                  >
+                    <div className="font-bold text-[16px] text-[#333]">
+                      {place.place_name}
+                    </div>
+                    <div className="text-[14px] text-gray-600 mt-[4px]">
+                      {place.address_name}
+                    </div>
+                    <div className="text-[12px] text-gray-500 mt-[2px]">
+                      {place.category_name}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500">
+                  출발지 검색 결과가 없습니다.
+                </div>
+              )
+            ) : endSearchResults.length > 0 ? (
+              endSearchResults.map((place, index) => (
                 <div
                   key={place.id || index}
                   className="flex flex-col p-[12px] hover:bg-gray-100 rounded-md cursor-pointer border border-gray-200"
@@ -179,7 +243,7 @@ const Search = () => {
               ))
             ) : (
               <div className="text-center text-gray-500">
-                검색 결과가 없습니다.
+                목적지 검색 결과가 없습니다.
               </div>
             )}
           </div>
