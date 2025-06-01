@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import SearchIcon from "../assets/Search.svg?react";
 import StartIcon from "../assets/Start.svg?react";
 import EndIcon from "../assets/End.svg?react";
 import ExchangeIcon from "../assets/Exchange.svg?react";
 import useLocationStore from "../store/useLocationStore";
+import kakaoLocationAPI from "../api/KakaoLocation";
 import { useNavigate } from "react-router-dom";
 
 interface InputPlaceProps {
@@ -29,6 +30,47 @@ const InputPlace = ({
   const { start: startbtn, setStart: setStartBtn } = useLocationStore();
 
   const navigate = useNavigate();
+
+  // useLocationStore의 start, end 값 변경 감지 및 API 호출
+  useEffect(() => {
+    const searchLocation = async (
+      location: string,
+      type: "출발지" | "목적지"
+    ) => {
+      if (!location.trim()) return;
+
+      try {
+        const result = await kakaoLocationAPI.searchByKeyword({
+          query: location,
+          size: 5, // 5개의 결과만 가져오기
+        });
+
+        console.log(`${type} "${location}" 검색 결과:`, result);
+        console.log(
+          `${type} 장소 목록:`,
+          result.documents.map((place) => ({
+            name: place.place_name,
+            address: place.address_name,
+            category: place.category_name,
+            x: place.x,
+            y: place.y,
+          }))
+        );
+      } catch (error) {
+        console.error(`${type} "${location}" 검색 실패:`, error);
+      }
+    };
+
+    // 출발지 검색
+    if (startbtn) {
+      searchLocation(startbtn, "출발지");
+    }
+
+    // 목적지 검색
+    if (endbtn) {
+      searchLocation(endbtn, "목적지");
+    }
+  }, [startbtn, endbtn]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStart(e.target.value);
@@ -66,7 +108,7 @@ const InputPlace = ({
           <InputPlaceComponent
             onChange={handleChange}
             placeholder="출발"
-            value={start || simplestart}
+            value={start || simplestart || ""}
             $comWidth={comwidth}
           />
           <StyledButton onClick={handleSearch} value={startbtn} paths={paths}>
@@ -91,7 +133,7 @@ const InputPlace = ({
           <InputPlaceComponent
             onChange={handleChangeEnd}
             placeholder="목적지"
-            value={end || simpleend}
+            value={end || simpleend || ""}
             $comWidth={comwidth}
           />
           <StyledButton onClick={handleSearch} value={endbtn}>

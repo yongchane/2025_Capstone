@@ -17,12 +17,12 @@ const Font = () => {
       <div className="mb-[30px]">원하는 글자 크기를 선택해 보세요!</div>
       {fontSizeOptions.map((option, index) => (
         <div
+          key={index}
           onClick={() => {
             navigate("/home");
           }}
         >
           <SelectBox
-            key={index}
             title={option.title}
             subtitle={option.subtitle}
             fontSize={option.fontSize}
