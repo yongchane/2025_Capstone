@@ -14,6 +14,7 @@ interface InputPlaceProps {
   paths?: string;
   simplestart?: string;
   simpleend?: string;
+  onSimpleEndProcessed?: () => void;
 }
 
 const InputPlace = ({
@@ -22,6 +23,7 @@ const InputPlace = ({
   paths = location.pathname,
   simplestart,
   simpleend,
+  onSimpleEndProcessed,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -71,6 +73,17 @@ const InputPlace = ({
       searchLocation(endbtn, "목적지");
     }
   }, [startbtn, endbtn]);
+
+  // simpleend props가 전달되면 end 값을 설정하고 초기화 콜백 호출
+  useEffect(() => {
+    if (simpleend && simpleend.trim()) {
+      setEnd(simpleend);
+      // props 처리가 완료되었음을 부모에게 알림
+      if (onSimpleEndProcessed) {
+        onSimpleEndProcessed();
+      }
+    }
+  }, [simpleend, onSimpleEndProcessed]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStart(e.target.value);

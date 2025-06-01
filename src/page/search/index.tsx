@@ -7,9 +7,11 @@ import ClockIcon from "../../assets/Clock.svg?react";
 import useLocationStore from "../../store/useLocationStore";
 import { getCurrentPosition } from "../../api/locationApi";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Search = () => {
   const navigate = useNavigate();
+  const [SearchEnd, setSearchEnd] = useState<string>("");
   const { searchHistory } = useLocationStore();
   const {
     clearHistory,
@@ -21,6 +23,11 @@ const Search = () => {
 
   const handleLocationClick = (location: string) => {
     setEnd(location);
+    setSearchEnd(location);
+  };
+
+  const handleSimpleEndProcessed = () => {
+    setSearchEnd("");
   };
 
   const handleDeleteClick = (e: React.MouseEvent, location: string) => {
@@ -53,7 +60,13 @@ const Search = () => {
       >
         <BackIcon />
       </div>
-      <InputPlace width="380px" comwidth="300px" paths="/simple" />
+      <InputPlace
+        width="380px"
+        comwidth="300px"
+        paths="/simple"
+        simpleend={SearchEnd}
+        onSimpleEndProcessed={handleSimpleEndProcessed}
+      />
       <div className="flex flex-col mt-[30px] relative">
         <div
           className="absolute right-0 hover:cursor-pointer flex items-center gap-[5px] text-[#4F94BF]"
