@@ -47,7 +47,7 @@ const SelectBox = ({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="w-[90px]">{title}</div>
+      <div className="w-[140px]">{title}</div>
       <div
         className="relative "
         style={{ fontSize: `${fontSize}px`, left: `${left}px` }}

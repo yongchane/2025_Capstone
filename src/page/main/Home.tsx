@@ -9,6 +9,8 @@ import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import BusStop from "./components/BusStop";
 import Place from "./components/Place";
+import { useFontSize } from "../../context/FontSizeContext";
+import { getNickname } from "../../api/auth";
 
 const selectBoxOptions = [
   {
@@ -28,13 +30,25 @@ const selectBoxOptions = [
 const Home = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { currentFontSize } = useFontSize();
+  const nickname = getNickname() || "사용자";
+
   return (
     <HomeContainer>
-      {/* 로그인에 따른 닉네임 및 로직 구현 필요 */}
       <div className="flex flex-col items-center justify-start w-full h-full">
-        <Title title="000님, 안녕하세요!" />
+        <Title title={`${nickname}님, 안녕하세요!`} />
+
+        {/* 폰트 사이즈 설정 버튼 */}
+        <div className="mb-4">
+          <button
+            onClick={() => navigate("/font")}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-small"
+          >
+            글자 크기 설정 (현재: {currentFontSize.title})
+          </button>
+        </div>
+
         <InputPlace />
-        {/* 맞춤형 검색 옵션 뷰 필요 */}
         <div className="flex gap-[26px] mt-[40px]">
           {selectBoxOptions.map((option, index) => (
             <SelectBox
@@ -46,14 +60,12 @@ const Home = () => {
               }}
             >
               {hoveredIndex === index ? option.hoverIcon : option.icon}
-              <div>{option.title}</div>
+              <div className="text-base">{option.title}</div>
             </SelectBox>
           ))}
         </div>
         <div className="mt-[40px] flex flex-col gap-[30px] w-full flex flex-col items-center">
-          {/* 버스 정류장 연동 필요 */}
           <BusStop />
-          {/* 장소 연동 필요 */}
           <Place />
         </div>
       </div>
