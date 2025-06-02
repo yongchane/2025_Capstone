@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title";
 import { useState } from "react";
 import LoginAPI from "../../api/Login";
+import { saveTokens } from "../../utils/auth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,8 +33,13 @@ const Login = () => {
         password: password.trim(),
       });
       console.log("로그인 성공:", response);
-      // TODO: 성공 시 처리 (토큰 저장, 페이지 이동 등)
-      alert("로그인 성공!");
+
+      // 토큰 저장 (유틸리티 함수 사용)
+      saveTokens(response.token, response.refreshToken, nickname.trim());
+
+      // 로그인 성공 시 메인 페이지로 이동
+      console.log("페이지 이동 중...");
+      navigate("/font", { replace: true }); // replace: true로 뒤로가기 방지
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
@@ -43,6 +49,7 @@ const Login = () => {
       console.error("로그인 실패:", error);
     } finally {
       setIsLoading(false);
+      console.log("로그인 완료확인", isLoading);
     }
   };
 
@@ -56,6 +63,11 @@ const Login = () => {
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           disabled={isLoading}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              handleLogin();
+            }
+          }}
         />
         <InputBox
           type="password"
@@ -63,6 +75,11 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isLoading}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              handleLogin();
+            }
+          }}
         />
 
         {/* 오류 메시지 표시 */}
@@ -72,7 +89,7 @@ const Login = () => {
         className="flex flex-col items-center justify-center pt-[70px] hover:cursor-pointer"
         onClick={isLoading ? undefined : handleLogin}
       >
-        <Btn path="font" text={isLoading ? "로그인 중..." : "로그인"} />
+        <Btn text={isLoading ? "로그인 중..." : "로그인"} />
       </div>
       <div
         className="text-[14px] text-gray-500 relative right-[-130px] mt-[29px] hover:cursor-pointer"
