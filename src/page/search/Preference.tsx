@@ -8,6 +8,7 @@ import MapIcon from "../../assets/Map.svg?react";
 import AtMapIcon from "../../assets/AtMap.svg?react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "@emotion/styled";
 
 // 맞춤형 작업 어느정도 완료시 없애는 뷰 띄우기 필요
 
@@ -17,21 +18,21 @@ const preferenceOptions = [
     hoverIcon: <AtBusIcon />,
     subtitle: "버스",
     fontSize: 16,
-    left: 70,
+    left: 0,
   },
   {
     icon: <SubwayIcon />,
     hoverIcon: <AtSubwayIcon />,
     subtitle: "지하철",
     fontSize: 16,
-    left: 70,
+    left: 0,
   },
   {
     icon: <MapIcon />,
     hoverIcon: <AtMapIcon />,
     subtitle: "버스+지하철",
     fontSize: 16,
-    left: 70,
+    left: 0,
   },
 ];
 
@@ -41,7 +42,7 @@ const Preference = () => {
   return (
     <div>
       <Title title="대중교통 선호도 조사" />
-      <div className="mb-[10px]">원하는 대중교통을 선택해 보세요!</div>
+      <TitleText>원하는 대중교통을 선택해 보세요!</TitleText>
       <div className=" text-[#A6A6A9] text-[10px]">
         ※ 대중교통 선호도 조사 과정이 끝나면 해당 선호도 조사는 사라집니다.
       </div>
@@ -68,3 +69,7 @@ const Preference = () => {
 };
 
 export default Preference;
+const TitleText = styled.div`
+  margin-bottom: 10px;
+  font-size: 16px;
+`;

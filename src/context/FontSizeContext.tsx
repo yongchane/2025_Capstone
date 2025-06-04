@@ -14,9 +14,9 @@ export interface FontSizeOption {
 }
 
 export const fontSizeOptions: FontSizeOption[] = [
-  { title: "작은 텍스트", subtitle: "A", fontSize: 12, left: 70 },
-  { title: "중간 텍스트", subtitle: "A", fontSize: 18, left: 70 },
-  { title: "큰 텍스트", subtitle: "A", fontSize: 30, left: 70 },
+  { title: "작은 텍스트", subtitle: "A", fontSize: 12, left: 0 },
+  { title: "중간 텍스트", subtitle: "A", fontSize: 18, left: 0 },
+  { title: "큰 텍스트", subtitle: "A", fontSize: 30, left: 0 },
 ];
 
 interface FontSizeContextType {
