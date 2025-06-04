@@ -1,0 +1,128 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 트러블슈팅 가이드
+
+## 🔧 일반적인 문제 해결
+
+### CORS 문제
+**문제**: API 호출 시 CORS 오류 발생
+**해결**: [vite.config.ts](mdc:vite.config.ts)의 프록시 설정 확인
+```typescript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://3.37.136.115:8080',
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api/, '')
+    }
+  }
+}
+```
+
+### 환경변수 인식 문제
+**문제**: `process.env` 사용 시 "process is not defined" 오류
+**해결**: Vite에서는 `import.meta.env` 사용
+```typescript
+// ❌ 잘못된 방법
+const apiUrl = process.env.VITE_API_URL;
+
+// ✅ 올바른 방법
+const apiUrl = import.meta.env.VITE_API_URL;
+```
+
+### 토큰 인증 실패
+**문제**: API 호출 시 401 Unauthorized 오류
+**해결책**:
+1. [auth.ts](mdc:src/utils/auth.ts)의 `getAuthHeaders()` 사용 확인
+2. localStorage에 토큰 저장 여부 확인
+3. 토큰 만료 시 자동 갱신 로직 확인
+
+### 폰트 사이즈 적용 안됨
+**문제**: 전역 폰트 사이즈 변경이 반영되지 않음
+**해결책**:
+1. [App.tsx](mdc:src/App.tsx)에서 `FontSizeProvider` 적용 확인
+2. CSS 변수가 [_global.tsx](mdc:src/style/_global.tsx)에 정의되어 있는지 확인
+3. 컴포넌트에서 `useFontSize()` 훅 사용 확인
+
+## 🐛 디버깅 팁
+
+### React DevTools 활용
+- Context 상태 확인
+- 컴포넌트 props 및 state 모니터링
+- 리렌더링 추적
+
+### 네트워크 탭 확인
+- API 요청/응답 상태 확인
+- 헤더 정보 검증
+- 프록시 설정 동작 확인
+
+### 콘솔 로그 활용
+```typescript
+console.log('API 요청 데이터:', requestData);
+console.log('응답 데이터:', response);
+console.error('오류 발생:', error);
+```
+
+## 🔄 자주 발생하는 TypeScript 오류
+
+### 타입 에러 해결
+```typescript
+// ❌ 타입 에러
+error.response.status // error에 타입이 없음
+
+// ✅ 타입 가드 사용
+if (error instanceof AxiosError) {
+  error.response?.status // 안전한 접근
+}
+```
+
+### null/undefined 체크
+```typescript
+// ❌ 잠재적 오류
+const token = localStorage.getItem('token');
+const header = `Bearer ${token}`;
+
+// ✅ 안전한 체크
+const token = localStorage.getItem('token');
+const header = token ? `Bearer ${token}` : undefined;
+```
+
+## 📦 의존성 문제
+
+### 패키지 설치 오류
+```bash
+# yarn cache 클리어
+yarn cache clean
+
+# node_modules 재설치
+rm -rf node_modules yarn.lock
+yarn install
+```
+
+### 버전 충돌 문제
+[package.json](mdc:package.json)에서 버전 호환성 확인:
+- React 18.x
+- TypeScript 5.x
+- Vite 5.x
+
+## 🔍 성능 최적화
+
+### 번들 크기 분석
+```bash
+yarn build
+yarn preview
+```
+
+### 메모리 누수 방지
+```typescript
+useEffect(() => {
+  const cleanup = () => {
+    // 정리 작업
+  };
+  
+  return cleanup; // cleanup 함수 반환
+}, []);
+```

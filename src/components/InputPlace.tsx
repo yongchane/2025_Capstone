@@ -17,6 +17,7 @@ interface InputPlaceProps {
   onSimpleEndProcessed?: () => void;
   onSimpleStartProcessed?: () => void;
   onClick?: () => void;
+  onSearchClick?: () => void;
 }
 
 const InputPlace = ({
@@ -28,6 +29,7 @@ const InputPlace = ({
   onSimpleEndProcessed,
   onSimpleStartProcessed,
   onClick,
+  onSearchClick,
 }: InputPlaceProps) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -152,6 +154,10 @@ const InputPlace = ({
     if (start === "" || end === "") {
       alert("출발지 또는 목적지를 입력해주세요.");
     } else {
+      // TmapClickAPI 호출
+      if (onSearchClick) {
+        onSearchClick();
+      }
       navigate(paths);
     }
   };

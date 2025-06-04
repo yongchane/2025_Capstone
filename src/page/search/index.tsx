@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import kakaoLocationAPI from "../../api/KakaoLocation";
 import { KakaoPlace } from "../../api/KakaoLocation";
+import TmapClickAPI from "../../api/TmapClickAPI";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -31,6 +32,15 @@ const Search = () => {
     start: searchStart,
     end: searchEndValue,
     click,
+    startX,
+    startY,
+    endX,
+    endY,
+    preferred,
+    setStartX,
+    setStartY,
+    setEndX,
+    setEndY,
   } = useLocationStore();
 
   // 입력 시 검색 결과 가져오기
@@ -124,11 +134,51 @@ const Search = () => {
     if (click === "출발") {
       setStart(place.place_name);
       setSearchStart(place.place_name);
+      const newStartX = Number(place.x);
+      const newStartY = Number(place.y);
+      setStartX(newStartX);
+      setStartY(newStartY);
     } else if (click === "목적지") {
       setEnd(place.place_name);
       setSearchEnd(place.place_name);
+      const newEndX = Number(place.x);
+      const newEndY = Number(place.y);
+      setEndX(newEndX);
+      setEndY(newEndY);
     }
     setShowHistory("기록");
+  };
+
+  // TmapClickAPI 호출 함수
+  const handleTmapSearch = async () => {
+    // 필수 좌표값들이 모두 있는지 확인
+    if (startX === null || startY === null || endX === null || endY === null) {
+      alert("출발지와 목적지의 좌표 정보가 필요합니다.");
+      return;
+    }
+
+    // preferred 값이 설정되었는지 확인
+    if (!preferred || preferred.trim() === "") {
+      alert("대중교통 선호도를 먼저 설정해주세요.");
+      navigate("/preference");
+      return;
+    }
+
+    try {
+      const response = await TmapClickAPI({
+        startX,
+        startY,
+        endX,
+        endY,
+        preferred: preferred,
+      });
+
+      console.log("TmapClickAPI 응답:", response);
+      // 응답 처리 로직을 여기에 추가
+    } catch (error) {
+      console.error("TmapClickAPI 호출 실패:", error);
+      alert("경로 검색에 실패했습니다.");
+    }
   };
 
   return (
@@ -148,6 +198,7 @@ const Search = () => {
         onSimpleEndProcessed={handleSimpleEndProcessed}
         onSimpleStartProcessed={handleSimpleStartProcessed}
         onClick={handleInputPlaceClick}
+        onSearchClick={handleTmapSearch}
       />
       {showHistory === "기록" ? (
         <div className="flex flex-col mt-[30px] relative">

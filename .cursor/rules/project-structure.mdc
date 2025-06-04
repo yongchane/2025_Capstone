@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# React 프로젝트 구조 가이드
+
+## 🏗️ 프로젝트 개요
+이 프로젝트는 React + TypeScript + Vite를 사용한 대중교통 경로 찾기 애플리케이션입니다.
+
+## 📁 주요 디렉토리 구조
+
+### `/src/components/`
+재사용 가능한 UI 컴포넌트들
+- [Title.tsx](mdc:src/components/Title.tsx) - 페이지 제목 컴포넌트
+- [SelectBox.tsx](mdc:src/components/SelectBox.tsx) - 선택 박스 컴포넌트
+
+### `/src/page/`
+페이지별 컴포넌트들
+- `/login/` - 로그인 관련 페이지들
+  - [Font.tsx](mdc:src/page/login/Font.tsx) - 폰트 사이즈 설정 페이지
+- `/main/` - 메인 페이지들
+  - [Home.tsx](mdc:src/page/main/Home.tsx) - 홈 페이지
+- `/search/` - 검색 관련 페이지들
+  - [Preference.tsx](mdc:src/page/search/Preference.tsx) - 대중교통 선호도 설정 페이지
+
+### `/src/api/`
+API 연동 함수들
+- [TmapClickAPI.ts](mdc:src/api/TmapClickAPI.ts) - Tmap 대중교통 경로 API
+- [auth.ts](mdc:src/api/auth.ts) - 인증 관련 API 함수들
+
+### `/src/context/`
+전역 상태 관리
+- [FontSizeContext.tsx](mdc:src/context/FontSizeContext.tsx) - 폰트 사이즈 전역 상태 관리
+
+### `/src/utils/`
+유틸리티 함수들
+- [auth.ts](mdc:src/utils/auth.ts) - 토큰 관리 및 인증 헤더 생성 함수들
+
+### `/src/style/`
+스타일 관련 파일들
+- [_global.tsx](mdc:src/style/_global.tsx) - 전역 스타일 및 CSS 변수 정의
+
+## 🔧 주요 설정 파일들
+- [vite.config.ts](mdc:vite.config.ts) - Vite 설정 (프록시 포함)
+- [package.json](mdc:package.json) - 프로젝트 의존성 관리

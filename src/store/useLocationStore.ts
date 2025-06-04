@@ -9,11 +9,21 @@ interface LocationState {
   xlocation: number | null;
   ylocation: number | null;
   click: string;
+  preferred: string;
+  startX: number | null;
+  startY: number | null;
+  endX: number | null;
+  endY: number | null;
+  setPreferred: (preferred: string | null) => void;
   setClick: (click: string) => void;
   setSearchE: (searchE: string) => void;
   setSearchS: (searchS: string) => void;
   setXlocation: (xlocation: number | null) => void;
   setYlocation: (ylocation: number | null) => void;
+  setStartX: (startX: number | null) => void;
+  setStartY: (startY: number | null) => void;
+  setEndX: (endX: number | null) => void;
+  setEndY: (endY: number | null) => void;
   setStart: (start: string) => void;
   setEnd: (end: string) => void;
   addToHistory: (location: string) => void;
@@ -30,8 +40,18 @@ const useLocationStore = create<LocationState>((set) => ({
   xlocation: null,
   ylocation: null,
   click: "",
+  preferred: "",
+  startX: null,
+  startY: null,
+  endX: null,
+  endY: null,
   setClick: (click) => {
     set({ click });
+  },
+  setPreferred: (preferred) => {
+    if (preferred !== undefined && preferred !== null) {
+      set({ preferred });
+    }
   },
   setSearchE: (searchE) => {
     if (searchE.trim()) {
@@ -55,16 +75,7 @@ const useLocationStore = create<LocationState>((set) => ({
       }));
     }
   },
-  setXlocation: (xlocation) => {
-    if (xlocation !== undefined && xlocation !== null) {
-      set({ xlocation });
-    }
-  },
-  setYlocation: (ylocation) => {
-    if (ylocation !== undefined && ylocation !== null) {
-      set({ ylocation });
-    }
-  },
+  // 출발지, 목적지 설정
   setStart: (start) => {
     if (start.trim()) {
       set({ start });
@@ -75,6 +86,41 @@ const useLocationStore = create<LocationState>((set) => ({
       set({ end });
     }
   },
+
+  // 출발지, 목적지 좌표 설정
+  setStartX: (startX) => {
+    if (startX !== undefined && startX !== null) {
+      set({ startX });
+    }
+  },
+  setStartY: (startY) => {
+    if (startY !== undefined && startY !== null) {
+      set({ startY });
+    }
+  },
+  setEndX: (endX) => {
+    if (endX !== undefined && endX !== null) {
+      set({ endX });
+    }
+  },
+  setEndY: (endY) => {
+    if (endY !== undefined && endY !== null) {
+      set({ endY });
+    }
+  },
+  // 현재 위치 좌표 설정
+  setXlocation: (xlocation) => {
+    if (xlocation !== undefined && xlocation !== null) {
+      set({ xlocation });
+    }
+  },
+  setYlocation: (ylocation) => {
+    if (ylocation !== undefined && ylocation !== null) {
+      set({ ylocation });
+    }
+  },
+
+  // 검색 기록 추가
   addToHistory: (location) => {
     if (location.trim()) {
       set((state) => ({

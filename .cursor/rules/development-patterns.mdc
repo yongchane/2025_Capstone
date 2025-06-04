@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 개발 패턴 및 코딩 스타일 가이드
+
+## 🎨 컴포넌트 패턴
+
+### 컴포넌트 구조
+```typescript
+import React from 'react';
+import styled from '@emotion/styled';
+import { useState, useEffect } from 'react';
+
+interface Props {
+  // props 타입 정의
+}
+
+const ComponentName: React.FC<Props> = ({ ...props }) => {
+  // 상태 관리
+  const [state, setState] = useState();
+  
+  // 이벤트 핸들러
+  const handleClick = () => {
+    // 로직
+  };
+  
+  // useEffect
+  useEffect(() => {
+    // 부수효과
+  }, []);
+  
+  return (
+    <div>
+      {/* JSX */}
+    </div>
+  );
+};
+
+export default ComponentName;
+
+// styled-components는 컴포넌트 하단에 배치
+const StyledComponent = styled.div`
+  /* 스타일 */
+`;
+```
+
+## 📂 파일 명명 규칙
+
+### 컴포넌트 파일
+- **PascalCase** 사용 (예: `Title.tsx`, `SelectBox.tsx`)
+- React 컴포넌트는 `.tsx` 확장자
+- 유틸리티 함수는 `.ts` 확장자
+
+### API 파일
+- **camelCase** + `API` 접미사 (예: `TmapClickAPI.ts`)
+- 기능별로 파일 분리
+
+### 스타일 파일
+- **underscore** prefix 사용 (예: `_global.tsx`, `_reset.tsx`)
+
+## 🎯 TypeScript 패턴
+
+### Interface 정의
+```typescript
+// Props Interface
+interface ComponentProps {
+  title: string;
+  subtitle?: string; // optional
+  onClick: () => void;
+}
+
+// API Response Interface
+interface APIResponse {
+  token: string;
+  refreshToken: string;
+  nickname: string;
+}
+
+// State Interface
+interface ClickCounts {
+  [key: string]: number;
+}
+```
+
+### 타입 가드 사용
+```typescript
+if (error instanceof AxiosError) {
+  // AxiosError 전용 로직
+}
+```
+
+## 🎨 스타일링 패턴
+
+### Tailwind CSS 클래스
+- 우선적으로 Tailwind 유틸리티 클래스 사용
+- 복잡한 스타일은 styled-components 활용
+
+### CSS 변수 활용
+전역 스타일에서 정의된 CSS 변수 사용:
+```css
+font-size: var(--base-font-size);
+color: var(--primary-color);
+```
+
+## 🔄 에러 처리 패턴
+
+### API 호출 에러 처리
+```typescript
+try {
+  const result = await apiFunction();
+  return result;
+} catch (error) {
+  console.error('API 호출 중 오류:', error);
+  if (error instanceof AxiosError) {
+    if (error.response?.status === 401) {
+      // 인증 오류 처리
+    }
+  }
+  throw error; // 상위로 전파
+}
+```
+
+## 📝 주석 및 문서화
+
+### 함수 주석
+```typescript
+/**
+ * 사용자 선호도를 기록하고 통계를 업데이트합니다
+ * @param option 선택된 옵션 정보
+ */
+const handleOptionClick = (option: PreferenceOption) => {
+  // 구현
+};
+```
+
+### TODO 주석
+```typescript
+// TODO: API 응답 타입 정의 필요
+// FIXME: 메모리 누수 가능성 확인
+// NOTE: 이 로직은 향후 리팩토링 예정
+```
