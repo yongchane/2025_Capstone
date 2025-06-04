@@ -5,6 +5,7 @@ import LocationIcon from "../../assets/Location.svg?react";
 import ClockIcon from "../../assets/Clock.svg?react";
 
 import useLocationStore from "../../store/useLocationStore";
+import usePublicStore from "../../store/usePublicStore";
 import { getCurrentPosition } from "../../api/locationApi";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -22,6 +23,7 @@ const Search = () => {
   ); // 출발지 검색 결과
   const [endSearchResults, setEndSearchResults] = useState<KakaoPlace[]>([]); // 목적지 검색 결과
   const { searchHistory } = useLocationStore();
+  const { setRoutes } = usePublicStore();
   const {
     clearHistory,
     removeFromHistory,
@@ -174,7 +176,15 @@ const Search = () => {
       });
 
       console.log("TmapClickAPI 응답:", response);
-      // 응답 처리 로직을 여기에 추가
+
+      // 응답 데이터를 usePublicStore에 저장
+      if (response && Array.isArray(response)) {
+        setRoutes(response);
+        // Simple 페이지로 이동
+        navigate("/simple");
+      } else {
+        alert("경로 정보를 불러올 수 없습니다.");
+      }
     } catch (error) {
       console.error("TmapClickAPI 호출 실패:", error);
       alert("경로 검색에 실패했습니다.");
