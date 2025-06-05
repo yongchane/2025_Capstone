@@ -109,9 +109,9 @@ const Simple = () => {
         />
       </div>
 
-      <div className="flex-1 bg-[#ffffff] mt-[20px] rounded-t-[12px] border border-[#B3DBED] ">
+      <div className="flex-1 bg-[#ffffff] mt-[20px] rounded-t-[12px] border border-[#B3DBED] hide-scrollbar overflow-y-auto">
         {/* 탭 네비게이션 */}
-        <div className="flex flex-col mb-[10px]">
+        <div className="flex flex-col mb-[10px] sticky top-0 bg-white z-10">
           <div className="flex gap-[5px] mb-[5px] pl-[20px] pt-[20px] overflow-x-auto">
             {tabs.map((tab) => (
               <div
@@ -128,7 +128,7 @@ const Simple = () => {
             ))}
           </div>
           <div className="w-[100%] h-[1px] bg-gray-200" />
-          <div className="flex gap-[10px] pl-[20px] pt-[10px] overflow-x-auto">
+          <div className="flex gap-[10px] pl-[20px] pt-[10px] pb-[10px] overflow-x-auto">
             {subtabs.map((subtab) => (
               <div
                 key={subtab.key}
@@ -144,6 +144,18 @@ const Simple = () => {
             ))}
           </div>
         </div>
+        {/* 스크롤바 숨기기 위한 스타일 */}
+        <style>
+          {`
+          .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari and Opera */
+          }
+        `}
+        </style>
         {/* 경로 리스트 */}
         {filterData && currentRoutes.length > 0 ? (
           <div className="flex flex-col gap-[15px] pl-[20px] pr-[20px] pt-[10px] pb-[40px]">
@@ -153,7 +165,7 @@ const Simple = () => {
                 className={`border border-gray-200 rounded-[8px] p-[15px] cursor-pointer ${
                   selectedRoute === route
                     ? "border-[#4F94BF] bg-blue-50"
-                    : "hover:bg-gray-50"
+                    : "hover:bg-[#F5F5F5]"
                 }`}
                 onClick={() => {
                   setSelectedRoute(route);
@@ -210,19 +222,20 @@ const Simple = () => {
                       <div className="text-[14px] text-gray-600">
                         출발: {formatTimeString(route.departureTime)}
                       </div>
+                      <div className="h-[1px] flex-1 mx-[8px] bg-[#90CB13]" />
                       <div className="text-[14px] text-gray-600">
                         도착: {formatTimeString(route.arrivalTime)}
                       </div>
                     </div>
 
                     {/* 상세 경로 정보 */}
-                    <div className="space-y-[10px]">
+                    <div className="space-y-[10px] ">
                       {route.legs.map((leg, legIndex) => (
                         <div
                           key={legIndex}
                           className="bg-gray-50 p-[12px] rounded-[6px]"
                         >
-                          <div className="flex items-center justify-between mb-[8px]">
+                          <div className=" w-[auto] flex items-center justify-between mb-[8px]">
                             <div className="flex items-center gap-[8px]">
                               <span className="text-[16px]">
                                 {getModeIcon(leg.mode)}
@@ -231,12 +244,13 @@ const Simple = () => {
                                 {leg.route}
                               </span>
                             </div>
-                            <span className="text-[12px] text-gray-500">
+                            <div className="h-[1px] flex-1 mx-[8px] bg-gray-400" />
+                            <span className=" w-[auto] text-[12px] text-gray-500">
                               {formatTime(leg.sectionTime)}
                             </span>
                           </div>
 
-                          <div className="text-[12px] text-gray-600 mb-[5px]">
+                          <div className="text-[14px] text-gray-600 font-bold mb-[5px]">
                             {leg.startName} → {leg.endName}
                           </div>
 
@@ -248,8 +262,23 @@ const Simple = () => {
                           )}
 
                           {leg.descriptions && leg.descriptions.length > 0 && (
-                            <div className="text-[11px] text-blue-600 mt-[5px]">
-                              {leg.descriptions.join(" | ")}
+                            <div className="text-[11px] mt-[5px] space-y-1">
+                              <div className="flex items-center justify-between">
+                                <div className=" mt-[5px] text-[14px] text-[#61AFFE] font-bold">
+                                  길안내
+                                </div>
+                                <div className="h-[1px] flex-1 ml-[8px] mt-[3px] bg-[#61AFFE]" />
+                              </div>
+                              {leg.descriptions.map(
+                                (description, descIndex) => (
+                                  <div
+                                    key={descIndex}
+                                    className=" px-2 py-1 rounded text-[12px]"
+                                  >
+                                    {descIndex + 1}. {description}
+                                  </div>
+                                )
+                              )}
                             </div>
                           )}
 
