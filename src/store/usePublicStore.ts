@@ -1,12 +1,47 @@
 import { create } from "zustand";
 
-// TmapClickAPI 응답 타입 정의
-export interface TmapLeg {
-  mode: "WALK" | "SUBWAY" | "BUS";
-  route: string | null;
+// FilterTransit API 응답 타입 정의
+export interface FilterLeg {
+  mode: string;
+  route: string;
   sectionTime: number;
   distance: number;
   startName: string;
+  endName: string;
+  stations: string[];
+  stationCount: number;
+  descriptions: string[];
+  stationId: string;
+  routeId: string;
+  predictTime: string;
+}
+
+export interface FilterRoute {
+  legs: FilterLeg[];
+  totalWalkDistance: number;
+  totalTime: number;
+  departureTime: string;
+  arrivalTime: string;
+}
+
+export interface FilterTransitResponse {
+  recommended: FilterRoute[];
+  subwayOnly: FilterRoute[];
+  busOnly: FilterRoute[];
+  minTransfer: FilterRoute;
+  minFare: FilterRoute;
+  minTime: FilterRoute;
+}
+
+// TmapClickAPI 응답 타입 정의 (기존 구조 유지)
+export interface TmapLeg {
+  mode: string;
+  route?: string;
+  sectionTime: number;
+  distance: number;
+  startName: string;
+  endName?: string;
+  [key: string]: unknown; // 추가 속성들을 위한 인덱스 시그니처
 }
 
 export interface TmapRoute {
@@ -17,81 +52,83 @@ export interface TmapRoute {
   totalWalkDistance: number;
 }
 
-export interface RouteCategory {
-  subway: TmapLeg[];
-  bus: TmapLeg[];
-  walk: TmapLeg[];
-}
-
 interface PublicStore {
-  routes: TmapRoute[];
-  selectedRoute: TmapRoute | null;
-  routeCategories: RouteCategory;
-  setRoutes: (routes: TmapRoute[]) => void;
-  setSelectedRoute: (route: TmapRoute) => void;
-  categorizeRoute: (route: TmapRoute) => void;
-  clearRoutes: () => void;
+  // FilterTransit 관련
+  filterData: FilterTransitResponse | null;
+  selectedCategory: keyof FilterTransitResponse;
+  selectedRoute: FilterRoute | null;
+
+  // TmapClickAPI 관련
+  tmapRoutes: TmapRoute[];
+
+  // FilterTransit 관련 함수
+  setFilterData: (data: FilterTransitResponse) => void;
+  setSelectedCategory: (category: keyof FilterTransitResponse) => void;
+  setSelectedRoute: (route: FilterRoute) => void;
+  getCurrentRoutes: () => FilterRoute[];
+
+  // TmapClickAPI 관련 함수
+  setTmapRoutes: (routes: TmapRoute[]) => void;
+
+  // 전체 초기화
+  clearAllData: () => void;
 }
 
 const usePublicStore = create<PublicStore>((set, get) => ({
-  routes: [],
+  // FilterTransit 상태
+  filterData: null,
+  selectedCategory: "recommended",
   selectedRoute: null,
-  routeCategories: {
-    subway: [],
-    bus: [],
-    walk: [],
+
+  // TmapClickAPI 상태
+  tmapRoutes: [],
+
+  // FilterTransit 함수들
+  setFilterData: (data: FilterTransitResponse) => {
+    set({ filterData: data });
+    // 기본적으로 추천 경로의 첫 번째 경로를 선택
+    if (data.recommended && data.recommended.length > 0) {
+      get().setSelectedRoute(data.recommended[0]);
+    }
   },
 
-  setRoutes: (routes: TmapRoute[]) => {
-    set({ routes });
-    // 첫 번째 경로를 기본 선택
+  setSelectedCategory: (category: keyof FilterTransitResponse) => {
+    set({ selectedCategory: category });
+    const routes = get().getCurrentRoutes();
     if (routes.length > 0) {
       get().setSelectedRoute(routes[0]);
     }
   },
 
-  setSelectedRoute: (route: TmapRoute) => {
+  setSelectedRoute: (route: FilterRoute) => {
     set({ selectedRoute: route });
-    get().categorizeRoute(route);
   },
 
-  categorizeRoute: (route: TmapRoute) => {
-    const subway: TmapLeg[] = [];
-    const bus: TmapLeg[] = [];
-    const walk: TmapLeg[] = [];
+  getCurrentRoutes: (): FilterRoute[] => {
+    const { filterData, selectedCategory } = get();
+    if (!filterData) return [];
 
-    route.legs.forEach((leg) => {
-      switch (leg.mode) {
-        case "SUBWAY":
-          subway.push(leg);
-          break;
-        case "BUS":
-          bus.push(leg);
-          break;
-        case "WALK":
-          walk.push(leg);
-          break;
-      }
-    });
-
-    set({
-      routeCategories: {
-        subway,
-        bus,
-        walk,
-      },
-    });
+    const categoryData = filterData[selectedCategory];
+    if (Array.isArray(categoryData)) {
+      return categoryData;
+    } else if (categoryData) {
+      return [categoryData];
+    }
+    return [];
   },
 
-  clearRoutes: () => {
+  // TmapClickAPI 함수들
+  setTmapRoutes: (routes: TmapRoute[]) => {
+    set({ tmapRoutes: routes });
+  },
+
+  // 전체 초기화
+  clearAllData: () => {
     set({
-      routes: [],
+      filterData: null,
+      selectedCategory: "recommended",
       selectedRoute: null,
-      routeCategories: {
-        subway: [],
-        bus: [],
-        walk: [],
-      },
+      tmapRoutes: [],
     });
   },
 }));

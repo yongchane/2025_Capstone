@@ -1,3 +1,6 @@
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 import InputPlace from "../../components/InputPlace";
 
 import BackIcon from "../../assets/Back.svg?react";
@@ -6,12 +9,12 @@ import ClockIcon from "../../assets/Clock.svg?react";
 
 import useLocationStore from "../../store/useLocationStore";
 import usePublicStore from "../../store/usePublicStore";
+
 import { getCurrentPosition } from "../../api/locationApi";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import kakaoLocationAPI from "../../api/KakaoLocation";
 import { KakaoPlace } from "../../api/KakaoLocation";
 import TmapClickAPI from "../../api/TmapClickAPI";
+import FilterTransit from "../../api/FilterTransit";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -23,7 +26,7 @@ const Search = () => {
   ); // 출발지 검색 결과
   const [endSearchResults, setEndSearchResults] = useState<KakaoPlace[]>([]); // 목적지 검색 결과
   const { searchHistory } = useLocationStore();
-  const { setRoutes } = usePublicStore();
+  const { setFilterData, setTmapRoutes } = usePublicStore();
   const {
     clearHistory,
     removeFromHistory,
@@ -174,12 +177,27 @@ const Search = () => {
         endY,
         preferred: preferred,
       });
+      const filterResponse = await FilterTransit({
+        startX,
+        startY,
+        endX,
+        endY,
+      });
 
-      console.log("TmapClickAPI 응답:", response);
+      console.log(
+        "TmapClickAPI 응답:",
+        response,
+        "FilterTransit 응답:",
+        filterResponse
+      );
 
-      // 응답 데이터를 usePublicStore에 저장
+      // 두 API 응답 모두 store에 저장
       if (response && Array.isArray(response)) {
-        setRoutes(response);
+        setTmapRoutes(response);
+      }
+
+      if (filterResponse) {
+        setFilterData(filterResponse);
         // Simple 페이지로 이동
         navigate("/simple");
       } else {

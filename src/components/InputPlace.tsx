@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import styled from "@emotion/styled";
+
 import SearchIcon from "../assets/Search.svg?react";
 import StartIcon from "../assets/Start.svg?react";
 import EndIcon from "../assets/End.svg?react";
 import ExchangeIcon from "../assets/Exchange.svg?react";
+
 import useLocationStore from "../store/useLocationStore";
+import usePublicStore from "../store/usePublicStore";
+
 import kakaoLocationAPI from "../api/KakaoLocation";
-import { useNavigate } from "react-router-dom";
+import FilterTransit from "../api/FilterTransit";
 
 interface InputPlaceProps {
   width?: string;
@@ -39,6 +45,10 @@ const InputPlace = ({
     setEnd: setEndBtn,
     setSearchE,
     setClick,
+    startX,
+    startY,
+    endX,
+    endY,
   } = useLocationStore();
   const {
     start: startbtn,
@@ -46,7 +56,10 @@ const InputPlace = ({
     setSearchS,
   } = useLocationStore();
 
+  const { setFilterData } = usePublicStore();
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   // useLocationStore의 start, end 값 변경 감지 및 API 호출
   useEffect(() => {
@@ -145,20 +158,53 @@ const InputPlace = ({
     setEnd(tempStart);
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setEndBtn(end);
     setStartBtn(start);
     setSearchE(end);
     setSearchS(start);
 
-    if (start === "" || end === "") {
-      alert("출발지 또는 목적지를 입력해주세요.");
-    } else {
-      // TmapClickAPI 호출
-      if (onSearchClick) {
-        onSearchClick();
+    // 현재 경로에 따라 다른 동작 수행
+    if (location.pathname === "/simple") {
+      // "/simple" 경로에서: FilterTransit API만 호출 (TmapClickAPI 호출 안함)
+      if (
+        startX !== null &&
+        startY !== null &&
+        endX !== null &&
+        endY !== null
+      ) {
+        try {
+          const filterResponse = await FilterTransit({
+            startX,
+            startY,
+            endX,
+            endY,
+          });
+          console.log("FilterTransit 응답:", filterResponse);
+          // store에 응답 데이터 저장
+          setFilterData(filterResponse);
+        } catch (error) {
+          console.error("FilterTransit 실패:", error);
+        }
+      } else {
+        console.log("좌표 정보가 불완전합니다:", {
+          startX,
+          startY,
+          endX,
+          endY,
+        });
       }
-      navigate(paths);
+    } else if (location.pathname !== "/simple") {
+      // "/search" 등 다른 경로에서: onSearchClick 콜백 호출 (TmapClickAPI + FilterTransit)
+      if (start === "" || end === "") {
+        alert("출발지 또는 목적지를 입력해주세요.");
+      } else {
+        // TmapClickAPI 호출 (부모 컴포넌트의 handleTmapSearch 실행)
+        if (onSearchClick) {
+          onSearchClick();
+        }
+        navigate(paths);
+      }
     }
   };
 
