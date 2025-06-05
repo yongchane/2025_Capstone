@@ -228,7 +228,10 @@ const InputPlace = ({
   };
 
   return (
-    <div className="flex flex-col mt-[30px]">
+    <div
+      className="flex flex-col mt-[30px] "
+      onClick={() => navigate("/search")}
+    >
       <div
         className="h-[140px] bg-[#ffffff] rounded-[12px] flex flex-col items-center justify-center border border-[#B3DBED] relative cursor-pointer"
         style={{ width }}

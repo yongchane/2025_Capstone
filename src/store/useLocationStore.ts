@@ -31,6 +31,15 @@ interface LocationState {
   removeFromHistory: (location: string) => void;
 }
 
+// localStorage에서 preferred 값을 가져오는 함수
+const getInitialPreferred = (): string => {
+  try {
+    return localStorage.getItem("userPreference") || "";
+  } catch {
+    return "";
+  }
+};
+
 const useLocationStore = create<LocationState>((set) => ({
   start: "",
   end: "",
@@ -40,7 +49,7 @@ const useLocationStore = create<LocationState>((set) => ({
   xlocation: null,
   ylocation: null,
   click: "",
-  preferred: "",
+  preferred: getInitialPreferred(), // localStorage에서 초기값 설정
   startX: null,
   startY: null,
   endX: null,
@@ -51,6 +60,12 @@ const useLocationStore = create<LocationState>((set) => ({
   setPreferred: (preferred) => {
     if (preferred !== undefined && preferred !== null) {
       set({ preferred });
+      // localStorage에도 동시에 저장
+      try {
+        localStorage.setItem("userPreference", preferred);
+      } catch (error) {
+        console.error("localStorage 저장 실패:", error);
+      }
     }
   },
   setSearchE: (searchE) => {

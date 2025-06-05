@@ -46,7 +46,7 @@ interface ClickCounts {
 const Preference = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [clickCounts, setClickCounts] = useState<ClickCounts>({});
-  const { preferred, setPreferred } = useLocationStore();
+  const { setPreferred } = useLocationStore();
   const navigate = useNavigate();
 
   // localStorage에서 클릭 횟수 불러오기
@@ -72,6 +72,9 @@ const Preference = () => {
 
   // 옵션 클릭 핸들러
   const handleOptionClick = (option: (typeof preferenceOptions)[0]) => {
+    // 선호도 값을 즉시 store에 저장
+    setPreferred(option.value);
+
     // 클릭 횟수 증가
     const newCounts = {
       ...clickCounts,
@@ -80,22 +83,17 @@ const Preference = () => {
 
     setClickCounts(newCounts);
 
-    // localStorage에 저장
+    // localStorage에 클릭 횟수 저장
     localStorage.setItem("preferenceClickCounts", JSON.stringify(newCounts));
 
     // 가장 많이 클릭된 옵션 업데이트
     updateMostClickedOption(newCounts);
 
-    // 선호도 값을 localStorage에 저장 (API에서 사용할 수 있도록)
-    localStorage.setItem("userPreference", option.value);
-
     console.log(
       `${option.subtitle} 클릭됨! 총 ${newCounts[option.subtitle]}번 클릭`
     );
     console.log("현재 클릭 통계:", newCounts);
-    if (preferred) {
-      console.log(`가장 선호하는 교통수단: ${preferred}`);
-    }
+    console.log(`선택된 교통수단: ${option.value}`);
 
     // 검색 페이지로 이동
     navigate("/search");

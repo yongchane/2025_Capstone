@@ -20,13 +20,16 @@ const Simple = () => {
   const simpleend = end;
 
   // 시간 포맷팅 함수 (분 -> 시간분)
-  const formatTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
+  const formatTime = (seconds: number) => {
+    const totalMinutes = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+
     if (hours > 0) {
-      return `${hours}시간 ${mins}분`;
+      return `${hours}시간 ${remainingMinutes}분`;
+    } else {
+      return `${totalMinutes}분`;
     }
-    return `${mins}분`;
   };
 
   // 시간 문자열 포맷팅 (ISO -> HH:MM)
@@ -76,11 +79,13 @@ const Simple = () => {
     { key: "recommended", label: "추천" },
     { key: "subwayOnly", label: "지하철" },
     { key: "busOnly", label: "버스" },
+  ] as const;
+
+  const subtabs = [
     { key: "minTime", label: "최단시간" },
     { key: "minFare", label: "최저요금" },
     { key: "minTransfer", label: "최소환승" },
   ] as const;
-
   const currentRoutes = getCurrentRoutes();
 
   return (
@@ -102,22 +107,38 @@ const Simple = () => {
 
       <div className="flex-1 bg-[#ffffff] mt-[20px] rounded-t-[12px] border border-[#B3DBED] p-[20px]">
         {/* 탭 네비게이션 */}
-        <div className="flex gap-[5px] mb-[20px] border-b border-gray-200 overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setSelectedCategory(tab.key)}
-              className={`px-[12px] py-[8px] text-[12px] border-none outline-none bg-transparent whitespace-nowrap ${
-                selectedCategory === tab.key
-                  ? "text-[#4F94BF] border-b-2 border-[#4F94BF] font-bold"
-                  : "text-gray-600"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex flex-col mb-[10px]">
+          <div className="flex gap-[5px] mb-[5px] border-b border-gray-200 overflow-x-auto">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setSelectedCategory(tab.key)}
+                className={`px-[12px] py-[8px] text-[12px] border-none outline-none bg-transparent whitespace-nowrap ${
+                  selectedCategory === tab.key
+                    ? "text-[#4F94BF] font-bold"
+                    : "text-gray-600"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-[5px]  overflow-x-auto">
+            {subtabs.map((subtab) => (
+              <button
+                key={subtab.key}
+                onClick={() => setSelectedCategory(subtab.key)}
+                className={`px-[12px] py-[8px] text-[12px] bg-[#F5F5F5 ] rounded-[15px] border-none outline-none  whitespace-nowrap ${
+                  selectedCategory === subtab.key
+                    ? "text-[#4F94BF] font-bold"
+                    : "text-gray-600"
+                }`}
+              >
+                {subtab.label}
+              </button>
+            ))}
+          </div>
         </div>
-
         {/* 경로 리스트 */}
         {filterData && currentRoutes.length > 0 ? (
           <div className="flex flex-col gap-[15px]">

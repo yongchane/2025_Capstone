@@ -157,6 +157,15 @@ const Search = () => {
   // TmapClickAPI 호출 함수
   const handleTmapSearch = async () => {
     // 필수 좌표값들이 모두 있는지 확인
+    console.log(
+      startX,
+      startY,
+      endX,
+      endY,
+      "좌표값",
+      preferred,
+      "대중교통 선호도 확인"
+    );
     if (startX === null || startY === null || endX === null || endY === null) {
       alert("출발지와 목적지의 좌표 정보가 필요합니다.");
       return;
