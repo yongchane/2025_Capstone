@@ -2,12 +2,14 @@ import InputPlace from "../../components/InputPlace";
 import { useNavigate } from "react-router-dom";
 import BackIcon from "../../assets/Back.svg?react";
 import useLocationStore from "../../store/useLocationStore";
-import usePublicStore from "../../store/usePublicStore";
-import { useState } from "react";
+import usePublicStore, {
+  FilterTransitResponse,
+} from "../../store/usePublicStore";
+import { useState, useEffect } from "react";
 
 const Simple = () => {
   const navigate = useNavigate();
-  const { start, end } = useLocationStore();
+  const { start, end, setPreferred } = useLocationStore();
   const {
     filterData,
     selectedCategory,
@@ -17,9 +19,167 @@ const Simple = () => {
     getCurrentRoutes,
   } = usePublicStore();
   const [clickBox, setClickBox] = useState<boolean>(false);
+  const [tabClickCounts, setTabClickCounts] = useState<{
+    [key: string]: number;
+  }>({});
 
   const simplestart = start;
   const simpleend = end;
+
+  // localStorage에서 탭 클릭 횟수 불러오기
+  useEffect(() => {
+    const savedTabCounts = localStorage.getItem("tabClickCounts");
+    if (savedTabCounts) {
+      const parsedCounts = JSON.parse(savedTabCounts);
+      setTabClickCounts(parsedCounts);
+      // 종합 선호도 분석 실행
+      analyzeComprehensivePreference(parsedCounts);
+    }
+  }, []);
+
+  // Preference와 Simple 탭 데이터를 종합 분석하는 함수
+  const analyzeComprehensivePreference = (currentTabCounts: {
+    [key: string]: number;
+  }) => {
+    // Preference 컴포넌트의 클릭 데이터 가져오기
+    const preferenceData = localStorage.getItem("preferenceClickCounts");
+    let preferenceClickCounts = {};
+
+    if (preferenceData) {
+      preferenceClickCounts = JSON.parse(preferenceData);
+    }
+
+    console.log("=== 종합 선호도 분석 시작 ===");
+    console.log("Preference 데이터:", preferenceClickCounts);
+    console.log("Simple 탭 데이터:", currentTabCounts);
+
+    // 1. Preference에서 가장 선호하는 교통수단 찾기
+    const topTransportMode = getTopPreference(preferenceClickCounts);
+
+    // 2. Simple에서 가장 선호하는 탭 유형 찾기
+    const topTabPreference = getTopPreference(currentTabCounts);
+
+    // 3. 두 선호도를 조합한 종합 결과 생성
+    const comprehensiveResult = generateComprehensivePreference(
+      topTransportMode,
+      topTabPreference,
+      preferenceClickCounts,
+      currentTabCounts
+    );
+
+    // 4. 최종 선호도 저장
+    if (comprehensiveResult) {
+      setPreferred(comprehensiveResult);
+      console.log("=== 최종 종합 선호도 ===");
+      console.log("설정된 선호도:", comprehensiveResult);
+
+      // 종합 결과를 별도 localStorage에도 저장
+      const analysisResult = {
+        transportMode: topTransportMode,
+        tabPreference: topTabPreference,
+        comprehensiveResult,
+        timestamp: new Date().toISOString(),
+        preferenceScores: preferenceClickCounts,
+        tabScores: currentTabCounts,
+      };
+      localStorage.setItem(
+        "comprehensivePreferenceAnalysis",
+        JSON.stringify(analysisResult)
+      );
+    }
+  };
+
+  // 가장 높은 점수의 선호도 찾기
+  const getTopPreference = (counts: { [key: string]: number }) => {
+    if (!counts || Object.keys(counts).length === 0) return null;
+
+    const maxCount = Math.max(...Object.values(counts));
+    return Object.keys(counts).find((key) => counts[key] === maxCount) || null;
+  };
+
+  // 두 선호도를 조합해서 종합 결과 생성
+  const generateComprehensivePreference = (
+    transportMode: string | null,
+    tabPreference: string | null,
+    preferenceScores: { [key: string]: number },
+    tabScores: { [key: string]: number }
+  ) => {
+    // 점수 기반 가중치 계산
+    const transportWeight = transportMode
+      ? preferenceScores[transportMode] || 0
+      : 0;
+    const tabWeight = tabPreference ? tabScores[tabPreference] || 0 : 0;
+
+    console.log(`교통수단 선호: ${transportMode} (${transportWeight}점)`);
+    console.log(`탭 선호: ${tabPreference} (${tabWeight}점)`);
+
+    // 조합 로직
+    if (!transportMode && !tabPreference) {
+      return "데이터 부족"; // 둘 다 없으면 기본값
+    }
+
+    if (!transportMode) {
+      return tabPreference; // 교통수단 선호가 없으면 탭 선호만
+    }
+
+    if (!tabPreference) {
+      return transportMode; // 탭 선호가 없으면 교통수단 선호만
+    }
+
+    // 둘 다 있을 때 조합 전략
+    const combinations = {
+      // 교통수단 + 탭 선호 조합
+      "버스+추천": "버스 추천 경로",
+      "버스+최단시간": "버스 최단시간",
+      "버스+최저요금": "버스 최저요금",
+      "버스+최소환승": "버스 최소환승",
+      "지하철+추천": "지하철 추천 경로",
+      "지하철+최단시간": "지하철 최단시간",
+      "지하철+최저요금": "지하철 최저요금",
+      "지하철+최소환승": "지하철 최소환승",
+      "버스+지하철+추천": "대중교통 추천 경로",
+      "버스+지하철+최단시간": "대중교통 최단시간",
+      "버스+지하철+최저요금": "대중교통 최저요금",
+      "버스+지하철+최소환승": "대중교통 최소환승",
+    };
+
+    const combinationKey = `${transportMode}+${tabPreference}`;
+    const result = combinations[combinationKey as keyof typeof combinations];
+
+    if (result) {
+      return result;
+    }
+
+    // 조합이 없으면 가중치가 높은 것 선택
+    if (transportWeight >= tabWeight) {
+      return `${transportMode} 우선`;
+    } else {
+      return `${tabPreference} 우선`;
+    }
+  };
+
+  // 탭 클릭 핸들러 (종합 분석 추가)
+  const handleTabClick = (tabKey: string, tabLabel: string) => {
+    // 기존 카테고리 설정
+    setSelectedCategory(tabKey as keyof FilterTransitResponse);
+
+    // 클릭 횟수 증가
+    const newCounts = {
+      ...tabClickCounts,
+      [tabLabel]: (tabClickCounts[tabLabel] || 0) + 1,
+    };
+
+    setTabClickCounts(newCounts);
+
+    // localStorage에 클릭 횟수 저장
+    localStorage.setItem("tabClickCounts", JSON.stringify(newCounts));
+
+    // 클릭할 때마다 종합 분석 실행
+    analyzeComprehensivePreference(newCounts);
+
+    console.log(`${tabLabel} 탭 클릭됨! 총 ${newCounts[tabLabel]}번 클릭`);
+    console.log("현재 탭 클릭 통계:", newCounts);
+  };
 
   // 시간 포맷팅 함수 (분 -> 시간분)
   const formatTime = (seconds: number) => {
@@ -116,7 +276,7 @@ const Simple = () => {
             {tabs.map((tab) => (
               <div
                 key={tab.key}
-                onClick={() => setSelectedCategory(tab.key)}
+                onClick={() => handleTabClick(tab.key, tab.label)}
                 className={`px-[12px] py-[8px] text-[12px] rounded-[15px] transition-colors cursor-pointer ${
                   selectedCategory === tab.key
                     ? "text-[#4F94BF] font-bold "
@@ -132,7 +292,7 @@ const Simple = () => {
             {subtabs.map((subtab) => (
               <div
                 key={subtab.key}
-                onClick={() => setSelectedCategory(subtab.key)}
+                onClick={() => handleTabClick(subtab.key, subtab.label)}
                 className={`px-[12px] py-[8px] text-[12px] w-auto bg-[#ffffff] border border-gray-200 rounded-[15px] cursor-pointer ${
                   selectedCategory === subtab.key
                     ? "text-[#ffffff] font-bold border-[#4F94BF] bg-[#61AFFE]"
