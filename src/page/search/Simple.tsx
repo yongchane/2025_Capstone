@@ -52,13 +52,13 @@ const Simple = () => {
   const getModeIcon = (mode: string) => {
     switch (mode.toUpperCase()) {
       case "SUBWAY":
-        return "🚇";
+        return "🚇 지하철";
       case "BUS":
-        return "🚌";
+        return "🚌 버스";
       case "WALK":
-        return "🚶";
+        return "🚶 도보";
       default:
-        return "🚶";
+        return "🚶 도보";
     }
   };
 
@@ -109,43 +109,44 @@ const Simple = () => {
         />
       </div>
 
-      <div className="flex-1 bg-[#ffffff] mt-[20px] rounded-t-[12px] border border-[#B3DBED] p-[20px]">
+      <div className="flex-1 bg-[#ffffff] mt-[20px] rounded-t-[12px] border border-[#B3DBED] ">
         {/* 탭 네비게이션 */}
         <div className="flex flex-col mb-[10px]">
-          <div className="flex gap-[5px] mb-[5px] border-b border-gray-200 overflow-x-auto">
+          <div className="flex gap-[5px] mb-[5px] pl-[20px] pt-[20px] overflow-x-auto">
             {tabs.map((tab) => (
-              <button
+              <div
                 key={tab.key}
                 onClick={() => setSelectedCategory(tab.key)}
-                className={`px-[12px] py-[8px] text-[12px] border-none outline-none bg-transparent whitespace-nowrap ${
+                className={`px-[12px] py-[8px] text-[12px] rounded-[15px] transition-colors cursor-pointer ${
                   selectedCategory === tab.key
-                    ? "text-[#4F94BF] font-bold"
-                    : "text-gray-600"
+                    ? "text-[#4F94BF] font-bold "
+                    : "text-gray-600 border-transparent bg-white hover:border-[#4F94BF] hover:shadow-sm hover:rounded-[15px]"
                 }`}
               >
                 {tab.label}
-              </button>
+              </div>
             ))}
           </div>
-          <div className="flex gap-[5px]  overflow-x-auto">
+          <div className="w-[100%] h-[1px] bg-gray-200" />
+          <div className="flex gap-[10px] pl-[20px] pt-[10px] overflow-x-auto">
             {subtabs.map((subtab) => (
-              <button
+              <div
                 key={subtab.key}
                 onClick={() => setSelectedCategory(subtab.key)}
-                className={`px-[12px] py-[8px] text-[12px] bg-[#F5F5F5 ] rounded-[15px] border-none outline-none  whitespace-nowrap ${
+                className={`px-[12px] py-[8px] text-[12px] w-auto bg-[#ffffff] border border-gray-200 rounded-[15px] cursor-pointer ${
                   selectedCategory === subtab.key
-                    ? "text-[#4F94BF] font-bold"
+                    ? "text-[#ffffff] font-bold border-[#4F94BF] bg-[#61AFFE]"
                     : "text-gray-600"
                 }`}
               >
                 {subtab.label}
-              </button>
+              </div>
             ))}
           </div>
         </div>
         {/* 경로 리스트 */}
         {filterData && currentRoutes.length > 0 ? (
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-[15px] pl-[20px] pr-[20px] pt-[10px] pb-[40px]">
             {currentRoutes.map((route, index) => (
               <div
                 key={index}
@@ -163,8 +164,11 @@ const Simple = () => {
                   // 간단한 뷰 (clickBox가 false일 때)
                   <>
                     <div className="flex justify-between items-center mb-[10px]">
-                      <div className="text-[16px] font-bold text-[#333]">
+                      <div className="flex flex-col text-[16px] font-bold text-[#333]">
                         {formatTime(route.totalTime)}
+                        <div className="text-[12px] text-gray-500 font-normal">
+                          도착 시간{formatTimeString(route.arrivalTime)}
+                        </div>
                       </div>
                       <div className="text-[12px] text-gray-500">
                         도보 {route.totalWalkDistance}m
@@ -179,7 +183,7 @@ const Simple = () => {
                               leg.mode
                             )}`}
                           >
-                            {getModeIcon(leg.mode)} {leg.route || leg.mode}
+                            {getModeIcon(leg.mode)} {leg.route}
                             {leg.mode.toUpperCase() === "WALK" &&
                               ` ${Math.round(leg.distance)}m`}
                           </span>
@@ -224,7 +228,7 @@ const Simple = () => {
                                 {getModeIcon(leg.mode)}
                               </span>
                               <span className="text-[14px] font-medium">
-                                {leg.route || leg.mode}
+                                {leg.route}
                               </span>
                             </div>
                             <span className="text-[12px] text-gray-500">
@@ -263,7 +267,7 @@ const Simple = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-500 mt-[50px]">
+          <div className="text-center text-gray-500 mt-[50px] pl-[20px] pr-[20px]">
             {filterData
               ? "해당 조건의 경로가 없습니다."
               : "경로 정보가 없습니다."}
