@@ -13,6 +13,8 @@ import { useFontSize } from "../../context/FontSizeContext";
 import { getNickname } from "../../api/auth";
 import { getCurrentPosition } from "../../api/locationApi";
 import useLocationStore from "../../store/useLocationStore";
+import PlaceAuto from "../../api/PlaceAuto";
+import { usePlaceStore } from "../../store/usePlaceStore";
 
 const selectBoxOptions = [
   {
@@ -35,6 +37,7 @@ const Home = () => {
   const { currentFontSize } = useFontSize();
   const nickname = getNickname() || "사용자";
   const { setXlocation, setYlocation } = useLocationStore();
+  const { setRecommendPlaces, setHasRecommendation } = usePlaceStore();
 
   useEffect(() => {
     handleCurrentLocation();
@@ -48,6 +51,9 @@ const Home = () => {
       setXlocation(xlocation);
       setYlocation(ylocation);
       console.log(xlocation, ylocation, "현재 위치");
+
+      // 위치 정보 로드 후 자동으로 PlaceAuto 호출
+      await handleAutoRecommend(xlocation, ylocation);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -56,6 +62,29 @@ const Home = () => {
       }
     }
   };
+
+  const handleAutoRecommend = async (xlocation: number, ylocation: number) => {
+    try {
+      console.log("🏠 Home에서 자동 추천 시작 - 좌표:", xlocation, ylocation);
+
+      const response = await PlaceAuto({ xlocation, ylocation });
+      console.log("🏠 Home 자동 추천 응답:", response);
+
+      // 응답 상태 코드가 204가 아닌 경우 (200, 201 등) 추천 데이터 저장
+      if (response.status !== 204) {
+        console.log("✅ 추천 데이터 저장 - 상태 코드:", response.status);
+        setRecommendPlaces(response.data);
+        setHasRecommendation(true);
+      } else {
+        console.log("⚠️ 204 응답 - 추천 데이터 없음");
+        setHasRecommendation(false);
+      }
+    } catch (error) {
+      console.error("🏠 Home 자동 추천 실패:", error);
+      setHasRecommendation(false);
+    }
+  };
+
   return (
     <HomeContainer>
       <div className="flex flex-col items-center justify-start w-full h-full">

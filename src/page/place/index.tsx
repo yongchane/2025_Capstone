@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { usePlaceStore } from "../../store/usePlaceStore";
 import { useInputPlace } from "../../store/usePlaceStore";
 import SearchRecommend from "../../api/SearchRecommend";
-
+import PlaceAuto from "../../api/PlaceAuto";
 const Place = () => {
   const navigate = useNavigate();
   const { xlocation, ylocation } = useLocationStore();
@@ -114,6 +114,45 @@ const Place = () => {
     }
   };
 
+  const handlePlaceAuto = async () => {
+    if (xlocation === null || ylocation === null) {
+      alert("위치 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      console.log("자동 추천 시작 - 좌표:", xlocation, ylocation);
+
+      const response = await PlaceAuto({ xlocation, ylocation });
+      console.log(response, "자동 추천 응답");
+
+      // 응답 상태 코드가 200인 경우에만 실행
+      if (response.status === 200) {
+        console.log("✅ 200 응답 받음 - 자동 추천 결과 표시");
+
+        // API 응답 데이터를 inputPlace에 저장
+        setInputPlace(response.data);
+
+        // changeView를 true로 설정하여 검색 결과 화면으로 전환
+        setChangeView(true);
+      } else {
+        console.log(`⚠️ 예상과 다른 응답 코드: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("자동 추천 실패:", error);
+      alert("자동 추천에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // 자동 추천 버튼이나 특정 조건에서 호출할 수 있도록 useEffect 추가
+  useEffect(() => {
+    // 위치 정보가 로드된 후 자동으로 PlaceAuto 호출 (예시)
+    // 필요시 이 로직을 수정하거나 제거할 수 있습니다
+    if (xlocation !== null && ylocation !== null) {
+      // handlePlaceAuto(); // 자동 실행을 원하면 주석 해제
+    }
+  }, [xlocation, ylocation]);
+
   return (
     <MainContainer>
       <div className="w-full pt-[20px] pb-[10px] pl-[10px] pr-[10px] flex flex-col justify-between items-center gap-[15px]">
@@ -131,9 +170,14 @@ const Place = () => {
               }
             }}
           />
-          <StyledButton onClick={handleSearchRecommend}>
-            <SearchIcon />
-          </StyledButton>
+          <div className="flex gap-2">
+            <StyledButton onClick={handleSearchRecommend} title="검색">
+              <SearchIcon />
+            </StyledButton>
+            <AutoButton onClick={handlePlaceAuto} title="자동 추천">
+              🤖
+            </AutoButton>
+          </div>
         </InputBoxContainer>
       </div>
       <ContentContainer>
@@ -180,7 +224,7 @@ const PlaceBoxWrapper = styled.div`
   padding: 20px;
   height: calc(100vh - 200px); /* 적절한 높이 설정 */
   overflow-y: auto; /* 스크롤 가능하지만 스크롤바 숨김 */
-  padding-bottom: 60px;
+
   /* 스크롤바 완전히 숨기기 */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -222,6 +266,24 @@ const InputBoxContainer = styled.div`
 `;
 
 const StyledButton = styled.button`
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border: none;
+  }
+`;
+
+const AutoButton = styled.button`
   width: 30px;
   height: 30px;
   padding: 0;

@@ -4,13 +4,16 @@ import { Place } from "../../../store/usePlaceStore";
 import { useInputPlace } from "../../../store/usePlaceStore";
 
 const PlaceBox = () => {
-  const { restaurant, cafe, bar, selectedCategory } = usePlaceStore();
+  const { restaurant, cafe, bar, selectedCategory, recommendPlaces } =
+    usePlaceStore();
   const { inputPlace, changeView } = useInputPlace();
   // 선택된 카테고리에 따라 표시할 데이터 결정
   const getDisplayData = (): Place[] => {
     switch (selectedCategory) {
       case "전체":
         return [...restaurant, ...cafe, ...bar];
+      case "맞춤형 추천":
+        return recommendPlaces;
       case "음식점":
         return restaurant;
       case "카페":

@@ -6,9 +6,10 @@ import {
 } from "../../../store/usePlaceStore";
 
 const Category = () => {
-  // 맞춤형 작업 완료시 맞춤형 카테고리 뜨게 코드 수정해야함
-  const { selectedCategory, setSelectedCategory } = usePlaceStore();
+  const { selectedCategory, setSelectedCategory, hasRecommendation } =
+    usePlaceStore();
   const { changeView } = useInputPlace();
+
   const handleCategoryClick = (category: CategoryType) => {
     setSelectedCategory(category);
   };
@@ -32,6 +33,18 @@ const Category = () => {
             >
               전체
             </div>
+            {hasRecommendation && (
+              <div
+                className={`${
+                  selectedCategory === "맞춤형 추천"
+                    ? "text-[#000000]"
+                    : "text-[#A6A6A9]"
+                } cursor-pointer`}
+                onClick={() => handleCategoryClick("맞춤형 추천")}
+              >
+                맞춤형 추천
+              </div>
+            )}
             <div
               className={`${
                 selectedCategory === "음식점"
