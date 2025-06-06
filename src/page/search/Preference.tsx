@@ -19,7 +19,7 @@ const preferenceOptions = [
     subtitle: "버스",
     fontSize: 16,
     left: 0,
-    value: "버스", // API에서 사용할 값
+    value: "BUS", // 서버에서 기대하는 영어 값
   },
   {
     icon: <SubwayIcon />,
@@ -27,7 +27,7 @@ const preferenceOptions = [
     subtitle: "지하철",
     fontSize: 16,
     left: 0,
-    value: "지하철", // API에서 사용할 값
+    value: "SUBWAY", // 서버에서 기대하는 영어 값
   },
   {
     icon: <MapIcon />,
@@ -35,7 +35,7 @@ const preferenceOptions = [
     subtitle: "버스+지하철",
     fontSize: 16,
     left: 0,
-    value: "버스+지하철", // API에서 사용할 값
+    value: "BUS_SUBWAY", // 서버에서 기대하는 영어 값
   },
 ];
 
