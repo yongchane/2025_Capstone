@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
-import usePlaceStore, { Place } from "../../../store/usePlaceStore";
+import { usePlaceStore } from "../../../store/usePlaceStore";
+import { Place } from "../../../store/usePlaceStore";
+import { useInputPlace } from "../../../store/usePlaceStore";
 
 const PlaceBox = () => {
   const { restaurant, cafe, bar, selectedCategory } = usePlaceStore();
-
+  const { inputPlace, changeView } = useInputPlace();
   // 선택된 카테고리에 따라 표시할 데이터 결정
   const getDisplayData = (): Place[] => {
     switch (selectedCategory) {
@@ -25,38 +27,70 @@ const PlaceBox = () => {
   console.log(restaurant, cafe, bar, "restaurant, cafe, bar");
   console.log(selectedCategory, "선택된 카테고리");
   console.log(displayData, "표시될 데이터");
-
-  // 데이터가 없을 때 표시할 내용
-  if (displayData.length === 0) {
-    return (
-      <div className="flex items-center justify-center w-full h-[140px] text-gray-400">
-        {selectedCategory} 데이터를 불러오는 중...
-      </div>
-    );
-  }
+  console.log(inputPlace, "inputPlace");
+  console.log(changeView, "changeView 상태");
 
   return (
     <PlaceGrid>
-      {displayData.map((place, index) => (
-        <PlaceBoxContainer key={`${selectedCategory}-${index}`}>
-          <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
-            사진
-          </div>
-          <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-            <div
-              className="font-medium text-sm truncate"
-              title={place.placeName}
-            >
-              {place.placeName}
+      {changeView === true ? (
+        <>
+          {inputPlace.length === 0 ? (
+            <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
+              검색 결과를 불러오는 중...
             </div>
-            <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-              <PlaceAddressName title={place.addressName}>
-                {place.addressName}
-              </PlaceAddressName>
+          ) : (
+            inputPlace.map((place, index) => (
+              <PlaceBoxContainer key={`search-${index}`}>
+                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                  사진
+                </div>
+                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                  <div
+                    className="font-medium text-sm truncate"
+                    title={place.placeName}
+                  >
+                    {place.placeName}
+                  </div>
+                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                    <PlaceAddressName title={place.addressName}>
+                      {place.addressName}
+                    </PlaceAddressName>
+                  </div>
+                </div>
+              </PlaceBoxContainer>
+            ))
+          )}
+        </>
+      ) : (
+        <>
+          {displayData.length === 0 ? (
+            <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
+              {selectedCategory} 데이터를 불러오는 중...
             </div>
-          </div>
-        </PlaceBoxContainer>
-      ))}
+          ) : (
+            displayData.map((place, index) => (
+              <PlaceBoxContainer key={`${selectedCategory}-${index}`}>
+                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                  사진
+                </div>
+                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                  <div
+                    className="font-medium text-sm truncate"
+                    title={place.placeName}
+                  >
+                    {place.placeName}
+                  </div>
+                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                    <PlaceAddressName title={place.addressName}>
+                      {place.addressName}
+                    </PlaceAddressName>
+                  </div>
+                </div>
+              </PlaceBoxContainer>
+            ))
+          )}
+        </>
+      )}
     </PlaceGrid>
   );
 };

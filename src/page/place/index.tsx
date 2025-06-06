@@ -6,16 +6,26 @@ import SearchIcon from "../../assets/search.svg?react";
 import { useNavigate } from "react-router-dom";
 import useLocationStore from "../../store/useLocationStore";
 import { SearchRestaurant, SearchCafe, SearchBar } from "../../api/SearchPlace";
-import { useEffect } from "react";
-import usePlaceStore from "../../store/usePlaceStore";
+import { useEffect, useState } from "react";
+import { usePlaceStore } from "../../store/usePlaceStore";
+import { useInputPlace } from "../../store/usePlaceStore";
+import SearchRecommend from "../../api/SearchRecommend";
 
 const Place = () => {
   const navigate = useNavigate();
   const { xlocation, ylocation } = useLocationStore();
   const { restaurant, cafe, bar, setRestaurant, setCafe, setBar } =
     usePlaceStore();
+  const { changeView, setChangeView, setInputPlace } = useInputPlace();
+  const [searchInput, setSearchInput] = useState<string>("");
 
   console.log(xlocation, ylocation, "xlocation, ylocation");
+
+  // 페이지 진입 시 초기화
+  useEffect(() => {
+    setChangeView(false); // changeView를 false로 초기화
+    setSearchInput(""); // 검색어도 초기화
+  }, []); // 컴포넌트 마운트 시에만 실행
 
   useEffect(() => {
     // xlocation, ylocation이 null이 아닐 때만 API 호출
@@ -61,6 +71,49 @@ const Place = () => {
 
   console.log(restaurant, cafe, bar, "restaurant, cafe, bar");
 
+  const handleSearchRecommend = async () => {
+    if (!searchInput.trim()) {
+      alert("검색어를 입력해주세요.");
+      return;
+    }
+
+    if (xlocation === null || ylocation === null) {
+      alert("위치 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      console.log(
+        "추천 검색 시작 - 검색어:",
+        searchInput,
+        "좌표:",
+        xlocation,
+        ylocation
+      );
+
+      // 입력된 검색어를 쉼표나 공백으로 분리하여 키워드 배열 생성
+      const keywords = searchInput
+        .split(/[,\s]+/) // 쉼표 또는 공백으로 분리
+        .filter((keyword) => keyword.trim().length > 0); // 빈 문자열 제거
+
+      const response = await SearchRecommend({
+        keyword: keywords,
+        xlocation,
+        ylocation,
+      });
+      console.log(response, "추천 응답");
+
+      // API 응답을 inputPlace에 저장
+      setInputPlace(response);
+
+      // 검색 완료 후 changeView를 true로 설정
+      setChangeView(true);
+    } catch (error) {
+      console.error("추천 검색 실패:", error);
+      alert("검색에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   return (
     <MainContainer>
       <div className="w-full pt-[20px] pb-[10px] pl-[10px] pr-[10px] flex flex-col justify-between items-center gap-[15px]">
@@ -68,18 +121,37 @@ const Place = () => {
           <BackIcon />
         </div>
         <InputBoxContainer>
-          <InputBox placeholder="맛집,카페,메뉴 검색" />
-          {/* 버튼 연동 필요 */}
-          <StyledButton>
+          <InputBox
+            placeholder="맛집,카페,메뉴 검색"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearchRecommend();
+              }
+            }}
+          />
+          <StyledButton onClick={handleSearchRecommend}>
             <SearchIcon />
           </StyledButton>
         </InputBoxContainer>
       </div>
       <ContentContainer>
-        <Category />
-        <PlaceBoxWrapper>
-          <PlaceBox />
-        </PlaceBoxWrapper>
+        {changeView === true ? (
+          <PlaceBoxWrapper>
+            <Category />
+            <PlaceBoxWrapper>
+              <PlaceBox />
+            </PlaceBoxWrapper>
+          </PlaceBoxWrapper>
+        ) : (
+          <PlaceBoxWrapper>
+            <Category />
+            <PlaceBoxWrapper>
+              <PlaceBox />
+            </PlaceBoxWrapper>
+          </PlaceBoxWrapper>
+        )}
       </ContentContainer>
     </MainContainer>
   );

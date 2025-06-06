@@ -9,12 +9,18 @@ export interface Place {
   y: number;
   addressName: string;
 }
-
+export interface InputPlace {
+  inputPlace: Place[];
+  changeView: boolean;
+  setInputPlace: (inputPlace: Place[]) => void;
+  setChangeView: (changeView: boolean) => void;
+}
 interface PlaceStore {
   restaurant: Place[];
   cafe: Place[];
   bar: Place[];
   selectedCategory: CategoryType;
+
   setRestaurant: (restaurant: Place[]) => void;
   setCafe: (cafe: Place[]) => void;
   setBar: (bar: Place[]) => void;
@@ -26,6 +32,7 @@ const usePlaceStore = create<PlaceStore>((set) => ({
   cafe: [],
   bar: [],
   selectedCategory: "전체",
+  changeView: false,
   setRestaurant: (restaurant: Place[]) => set({ restaurant }),
   setCafe: (cafe: Place[]) => set({ cafe }),
   setBar: (bar: Place[]) => set({ bar }),
@@ -33,4 +40,10 @@ const usePlaceStore = create<PlaceStore>((set) => ({
     set({ selectedCategory: category }),
 }));
 
-export default usePlaceStore;
+const useInputPlace = create<InputPlace>((set) => ({
+  inputPlace: [],
+  changeView: false,
+  setChangeView: (changeView: boolean) => set({ changeView }),
+  setInputPlace: (inputPlace: Place[]) => set({ inputPlace }),
+}));
+export { useInputPlace, usePlaceStore };
