@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Title from "../../components/Title";
 import InputPlace from "../../components/InputPlace";
 import PlaceIcon from "../../assets/Place.svg?react";
@@ -11,6 +11,8 @@ import BusStop from "./components/BusStop";
 import Place from "./components/Place";
 import { useFontSize } from "../../context/FontSizeContext";
 import { getNickname } from "../../api/auth";
+import { getCurrentPosition } from "../../api/locationApi";
+import useLocationStore from "../../store/useLocationStore";
 
 const selectBoxOptions = [
   {
@@ -32,7 +34,28 @@ const Home = () => {
   const navigate = useNavigate();
   const { currentFontSize } = useFontSize();
   const nickname = getNickname() || "사용자";
+  const { setXlocation, setYlocation } = useLocationStore();
 
+  useEffect(() => {
+    handleCurrentLocation();
+  }, []);
+
+  const handleCurrentLocation = async () => {
+    try {
+      const position = await getCurrentPosition();
+      const xlocation = Number(position.latitude.toFixed(6));
+      const ylocation = Number(position.longitude.toFixed(6));
+      setXlocation(xlocation);
+      setYlocation(ylocation);
+      console.log(xlocation, ylocation, "현재 위치");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("위치 정보를 가져오는 중 오류가 발생했습니다.");
+      }
+    }
+  };
   return (
     <HomeContainer>
       <div className="flex flex-col items-center justify-start w-full h-full">
