@@ -24,6 +24,15 @@ export interface FilterRoute {
   arrivalTime: string;
 }
 
+// TmapAuto API 응답 타입 정의 (FilterRoute와 동일한 구조)
+export interface TmapAutoRoute {
+  legs: FilterLeg[];
+  totalWalkDistance: number;
+  totalTime: number;
+  departureTime: string;
+  arrivalTime: string;
+}
+
 export interface FilterTransitResponse {
   recommended: FilterRoute[];
   subwayOnly: FilterRoute[];
@@ -57,7 +66,7 @@ interface PublicStore {
   filterData: FilterTransitResponse | null;
   selectedCategory: keyof FilterTransitResponse;
   selectedRoute: FilterRoute | null;
-
+  customRouteData: TmapAutoRoute[] | null;
   // TmapClickAPI 관련
   tmapRoutes: TmapRoute[];
 
@@ -66,7 +75,7 @@ interface PublicStore {
   setSelectedCategory: (category: keyof FilterTransitResponse) => void;
   setSelectedRoute: (route: FilterRoute) => void;
   getCurrentRoutes: () => FilterRoute[];
-
+  setCustomRouteData: (data: TmapAutoRoute[]) => void;
   // TmapClickAPI 관련 함수
   setTmapRoutes: (routes: TmapRoute[]) => void;
 
@@ -79,7 +88,7 @@ const usePublicStore = create<PublicStore>((set, get) => ({
   filterData: null,
   selectedCategory: "recommended",
   selectedRoute: null,
-
+  customRouteData: null,
   // TmapClickAPI 상태
   tmapRoutes: [],
 
@@ -117,6 +126,10 @@ const usePublicStore = create<PublicStore>((set, get) => ({
     return [];
   },
 
+  setCustomRouteData: (data: TmapAutoRoute[]) => {
+    set({ customRouteData: data });
+  },
+
   // TmapClickAPI 함수들
   setTmapRoutes: (routes: TmapRoute[]) => {
     set({ tmapRoutes: routes });
@@ -128,6 +141,7 @@ const usePublicStore = create<PublicStore>((set, get) => ({
       filterData: null,
       selectedCategory: "recommended",
       selectedRoute: null,
+      customRouteData: null,
       tmapRoutes: [],
     });
   },

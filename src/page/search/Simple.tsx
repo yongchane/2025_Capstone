@@ -4,6 +4,8 @@ import BackIcon from "../../assets/Back.svg?react";
 import useLocationStore from "../../store/useLocationStore";
 import usePublicStore, {
   FilterTransitResponse,
+  TmapAutoRoute,
+  FilterLeg,
 } from "../../store/usePublicStore";
 import { useState, useEffect } from "react";
 import TmapAuto from "../../api/TmapAuto";
@@ -16,16 +18,18 @@ const Simple = () => {
     filterData,
     selectedCategory,
     selectedRoute,
+    customRouteData,
     setSelectedCategory,
     setSelectedRoute,
     getCurrentRoutes,
+    setCustomRouteData,
   } = usePublicStore();
   const [clickBox, setClickBox] = useState<boolean>(false);
   const [tabClickCounts, setTabClickCounts] = useState<{
     [key: string]: number;
   }>({});
   const [showCustomRoute, setShowCustomRoute] = useState<boolean>(false);
-  const [customRouteData, setCustomRouteData] = useState<unknown>(null);
+  // const [customRouteData, setCustomRouteData] = useState<unknown>(null);
   const [showOriginalTabs, setShowOriginalTabs] = useState<boolean>(false);
 
   const simplestart = start;
@@ -352,9 +356,162 @@ const Simple = () => {
                 <h4 className="text-[14px] font-bold text-[#333] mb-[10px]">
                   TmapAuto 응답 데이터:
                 </h4>
-                <pre className="text-[12px] text-gray-700 whitespace-pre-wrap overflow-x-auto bg-white p-[10px] rounded border">
+                {/* <pre className="text-[12px] text-gray-700 whitespace-pre-wrap overflow-x-auto bg-white p-[10px] rounded border">
                   {JSON.stringify(customRouteData, null, 2)}
-                </pre>
+                </pre> */}
+                <div className="flex flex-col gap-[15px] pl-[20px] pr-[20px] pt-[10px] pb-[40px]">
+                  {customRouteData.map(
+                    (route: TmapAutoRoute, index: number) => (
+                      <div
+                        key={index}
+                        className={`border border-gray-200 rounded-[8px] p-[15px] cursor-pointer ${
+                          selectedRoute === route
+                            ? "border-[#4F94BF] bg-blue-50"
+                            : "hover:bg-[#F5F5F5]"
+                        }`}
+                        onClick={() => {
+                          setSelectedRoute(route);
+                          setClickBox(!clickBox);
+                        }}
+                      >
+                        {clickBox === false ? (
+                          // 간단한 뷰 (clickBox가 false일 때)
+                          <>
+                            <div className="flex justify-between items-center mb-[10px]">
+                              <div className="flex flex-col text-[16px] font-bold text-[#333]">
+                                {formatTime(route.totalTime)}
+                                <div className="text-[12px] text-gray-500 font-normal">
+                                  도착 시간{formatTimeString(route.arrivalTime)}
+                                </div>
+                              </div>
+                              <div className="text-[12px] text-gray-500">
+                                도보 {route.totalWalkDistance}m
+                              </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-[5px] items-center">
+                              {route.legs.map(
+                                (leg: FilterLeg, legIndex: number) => (
+                                  <div
+                                    key={legIndex}
+                                    className="flex items-center"
+                                  >
+                                    <span
+                                      className={`text-[12px] px-[6px] py-[2px] rounded ${getModeColor(
+                                        leg.mode
+                                      )}`}
+                                    >
+                                      {getModeIcon(leg.mode)} {leg.route}
+                                      {leg.mode.toUpperCase() === "WALK" &&
+                                        ` ${Math.round(leg.distance)}m`}
+                                    </span>
+                                    {legIndex < route.legs.length - 1 && (
+                                      <span className="mx-[3px] text-gray-400">
+                                        →
+                                      </span>
+                                    )}
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          // 상세한 뷰 (clickBox가 true일 때)
+                          <>
+                            <div className="flex justify-between items-center mb-[10px]">
+                              <div className="text-[16px] font-bold text-[#333]">
+                                {formatTime(route.totalTime)}
+                              </div>
+                              <div className="text-[12px] text-gray-500">
+                                도보 {route.totalWalkDistance}m
+                              </div>
+                            </div>
+
+                            <div className="flex justify-between items-center mb-[15px]">
+                              <div className="text-[14px] text-gray-600">
+                                출발: {formatTimeString(route.departureTime)}
+                              </div>
+                              <div className="h-[1px] flex-1 mx-[8px] bg-[#90CB13]" />
+                              <div className="text-[14px] text-gray-600">
+                                도착: {formatTimeString(route.arrivalTime)}
+                              </div>
+                            </div>
+
+                            {/* 상세 경로 정보 */}
+                            <div className="space-y-[10px] ">
+                              {route.legs.map(
+                                (leg: FilterLeg, legIndex: number) => (
+                                  <div
+                                    key={legIndex}
+                                    className="bg-gray-50 p-[12px] rounded-[6px]"
+                                  >
+                                    <div className=" w-[auto] flex items-center justify-between mb-[8px]">
+                                      <div className="flex items-center gap-[8px]">
+                                        <span className="text-[16px]">
+                                          {getModeIcon(leg.mode)}
+                                        </span>
+                                        <span className="text-[14px] font-medium">
+                                          {leg.route}
+                                        </span>
+                                      </div>
+                                      <div className="h-[1px] flex-1 mx-[8px] bg-gray-400" />
+                                      <span className=" w-[auto] text-[12px] text-gray-500">
+                                        {formatTime(leg.sectionTime)}
+                                      </span>
+                                    </div>
+
+                                    <div className="text-[14px] text-gray-600 font-bold mb-[5px]">
+                                      {leg.startName} → {leg.endName}
+                                    </div>
+
+                                    {leg.stations &&
+                                      leg.stations.length > 0 && (
+                                        <div className="text-[11px] text-gray-500">
+                                          정거장 {leg.stationCount}개:{" "}
+                                          {leg.stations.join(", ")}
+                                        </div>
+                                      )}
+
+                                    {leg.descriptions &&
+                                      leg.descriptions.length > 0 && (
+                                        <div className="text-[11px] mt-[5px] space-y-1">
+                                          <div className="flex items-center justify-between">
+                                            <div className=" mt-[5px] text-[14px] text-[#61AFFE] font-bold">
+                                              길안내
+                                            </div>
+                                            <div className="h-[1px] flex-1 ml-[8px] mt-[3px] bg-[#61AFFE]" />
+                                          </div>
+                                          {leg.descriptions.map(
+                                            (
+                                              description: string,
+                                              descIndex: number
+                                            ) => (
+                                              <div
+                                                key={descIndex}
+                                                className=" px-2 py-1 rounded text-[12px]"
+                                              >
+                                                {descIndex + 1}. {description}
+                                              </div>
+                                            )
+                                          )}
+                                        </div>
+                                      )}
+
+                                    <div className="text-[11px] text-gray-400 mt-[5px]">
+                                      거리: {leg.distance}m
+                                      {leg.predictTime &&
+                                        ` | 예상시간: ${leg.predictTime}`}
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             </div>
 
