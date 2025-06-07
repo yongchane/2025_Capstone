@@ -18,7 +18,10 @@ const Category = () => {
     <div className="flex flex-col gap-[10px] pb-[20px]">
       {changeView === true ? (
         <CategoryContainer>
-          <div>검색결과</div>
+          <div className="flex flex-col gap-[10px] w-[100%]">
+            <div>검색결과</div>
+            <div className="w-[100%] h-[1px] bg-[#F5F5F5]" />
+          </div>
         </CategoryContainer>
       ) : (
         <>
@@ -26,7 +29,7 @@ const Category = () => {
             <div
               className={`${
                 selectedCategory === "전체"
-                  ? "text-[#000000]"
+                  ? "text-[#000000] "
                   : "text-[#A6A6A9]"
               } cursor-pointer`}
               onClick={() => handleCategoryClick("전체")}
