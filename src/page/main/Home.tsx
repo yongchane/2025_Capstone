@@ -14,7 +14,8 @@ import { getNickname } from "../../utils/auth";
 import { getCurrentPosition } from "../../api/locationApi";
 import useLocationStore from "../../store/useLocationStore";
 import PlaceAuto from "../../api/PlaceAuto";
-import { usePlaceStore } from "../../store/usePlaceStore";
+import { useInputPlace, usePlaceStore } from "../../store/usePlaceStore";
+import PlaceAll from "../../api/PlaceAll";
 
 const selectBoxOptions = [
   {
@@ -38,7 +39,7 @@ const Home = () => {
   const nickname = getNickname() || "사용자";
   const { setXlocation, setYlocation } = useLocationStore();
   const { setRecommendPlaces, setHasRecommendation } = usePlaceStore();
-
+  const { setAllPlace } = useInputPlace();
   useEffect(() => {
     handleCurrentLocation();
   }, []);
@@ -54,6 +55,7 @@ const Home = () => {
 
       // 위치 정보 로드 후 자동으로 PlaceAuto 호출
       await handleAutoRecommend(xlocation, ylocation);
+      await handlePlaceAll(xlocation, ylocation);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -82,6 +84,27 @@ const Home = () => {
     } catch (error) {
       console.error("🏠 Home 자동 추천 실패:", error);
       setHasRecommendation(false);
+    }
+  };
+
+  const handlePlaceAll = async (xlocation: number, ylocation: number) => {
+    try {
+      console.log(
+        "🏠 Home에서 PlaceAll API 호출 시작 - 좌표:",
+        xlocation,
+        ylocation
+      );
+      const response = await PlaceAll({ xlocation, ylocation });
+      console.log("🏠 Home PlaceAll API 응답:", response);
+
+      if (response && response.length > 0) {
+        setAllPlace(response);
+        console.log("✅ allPlace 데이터 저장 완료 - 개수:", response.length);
+      } else {
+        console.log("⚠️ PlaceAll API 응답이 비어있음");
+      }
+    } catch (error) {
+      console.error("🏠 Home PlaceAll API 호출 실패:", error);
     }
   };
 

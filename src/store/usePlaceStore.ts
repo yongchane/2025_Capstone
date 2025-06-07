@@ -26,8 +26,10 @@ interface PlaceStore {
 }
 
 interface InputPlaceStore {
+  allPlace: Place[];
   inputPlace: Place[];
   changeView: boolean;
+  setAllPlace: (allPlace: Place[]) => void;
   setInputPlace: (inputPlace: Place[]) => void;
   setChangeView: (changeView: boolean) => void;
 }
@@ -50,8 +52,10 @@ const usePlaceStore = create<PlaceStore>((set) => ({
 }));
 
 const useInputPlace = create<InputPlaceStore>((set) => ({
+  allPlace: [],
   inputPlace: [],
   changeView: false,
+  setAllPlace: (allPlace: Place[]) => set({ allPlace }),
   setInputPlace: (inputPlace: Place[]) => set({ inputPlace }),
   setChangeView: (changeView: boolean) => set({ changeView }),
 }));

@@ -10,7 +10,7 @@ interface PlaceBoxProps {
 const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
   const { restaurant, cafe, bar, selectedCategory, recommendPlaces } =
     usePlaceStore();
-  const { inputPlace, changeView } = useInputPlace();
+  const { inputPlace, changeView, allPlace } = useInputPlace();
 
   // 선택된 카테고리에 따라 표시할 데이터 결정
   const getDisplayData = (): Place[] => {
@@ -47,6 +47,35 @@ const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
   console.log(displayData, "표시될 데이터");
   console.log(inputPlace, "inputPlace");
   console.log(changeView, "changeView 상태");
+  console.log(allPlace, "allPlace");
+
+  // Home에서는 allPlace 데이터를 우선 표시
+  if (isHome && allPlace && allPlace.length > 0) {
+    return (
+      <PlaceGrid isHome={isHome}>
+        {allPlace.slice(0, 2).map((place, index) => (
+          <PlaceBoxContainer key={`home-all-${index}`}>
+            <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm rounded-[10px]">
+              사진
+            </div>
+            <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+              <div
+                className="font-medium text-sm truncate"
+                title={place.placeName}
+              >
+                {place.placeName}
+              </div>
+              <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                <PlaceAddressName title={place.addressName}>
+                  {place.addressName}
+                </PlaceAddressName>
+              </div>
+            </div>
+          </PlaceBoxContainer>
+        ))}
+      </PlaceGrid>
+    );
+  }
 
   return (
     <PlaceGrid isHome={isHome}>
@@ -58,28 +87,26 @@ const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
             </div>
           ) : (
             // isHome일 때는 inputPlace도 최대 2개만 표시
-            (isHome ? inputPlace.slice(0, 2) : inputPlace).map(
-              (place, index) => (
-                <PlaceBoxContainer key={`search-${index}`}>
-                  <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
-                    사진
+            (isHome ? allPlace.slice(0, 2) : allPlace).map((place, index) => (
+              <PlaceBoxContainer key={`search-${index}`}>
+                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                  사진
+                </div>
+                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                  <div
+                    className="font-medium text-sm truncate"
+                    title={place.placeName}
+                  >
+                    {place.placeName}
                   </div>
-                  <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-                    <div
-                      className="font-medium text-sm truncate"
-                      title={place.placeName}
-                    >
-                      {place.placeName}
-                    </div>
-                    <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                      <PlaceAddressName title={place.addressName}>
-                        {place.addressName}
-                      </PlaceAddressName>
-                    </div>
+                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                    <PlaceAddressName title={place.addressName}>
+                      {place.addressName}
+                    </PlaceAddressName>
                   </div>
-                </PlaceBoxContainer>
-              )
-            )
+                </div>
+              </PlaceBoxContainer>
+            ))
           )}
         </>
       ) : (

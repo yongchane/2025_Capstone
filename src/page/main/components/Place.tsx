@@ -24,7 +24,14 @@ const Place = ({ isHome = false }: PlaceProps) => {
         주변
       </div>
       <ShowBoxTop>
+        <div className="text-[14px]">추천 맛집</div>
+        <div className="w-[100%] h-[1px] bg-gray-200 mt-[10px] mb-[10px]" />
         <PlaceBox isHome={isHome} />
+        <div className="flex justify-center mt-[15px]">
+          <div className="flex items-center justify-center w-[50px] h-[auto] p-[5px] text-[12px] text-gray-400 border-[1px] border-gray-200 hover:bg-gray-200 rounded-[5px]">
+            더보기
+          </div>
+        </div>
       </ShowBoxTop>
     </ShowBox>
   );
