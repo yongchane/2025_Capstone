@@ -32,7 +32,7 @@ const Login = () => {
         nickname: nickname.trim(),
         password: password.trim(),
       });
-      console.log("로그인 성공:", response);
+      console.log("로그인 성공:", response, "nickname", nickname);
 
       // 토큰 저장 (유틸리티 함수 사용)
       saveTokens(response.token, response.refreshToken, nickname.trim());

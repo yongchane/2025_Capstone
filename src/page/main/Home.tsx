@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import BusStop from "./components/BusStop";
 import Place from "./components/Place";
 import { useFontSize } from "../../context/FontSizeContext";
-import { getNickname } from "../../api/auth";
+import { getNickname } from "../../utils/auth";
 import { getCurrentPosition } from "../../api/locationApi";
 import useLocationStore from "../../store/useLocationStore";
 import PlaceAuto from "../../api/PlaceAuto";

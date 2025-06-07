@@ -20,6 +20,10 @@ export const getTokens = () => {
   };
 };
 
+export const getNickname = (): string | null => {
+  return localStorage.getItem("userNickname");
+};
+
 // 로그인 상태 확인
 export const isLoggedIn = (): boolean => {
   const { accessToken } = getTokens();

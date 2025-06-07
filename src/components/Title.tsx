@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 
 const Title = ({ title }: { title: string }) => {
+  console.log(title, "title");
   return (
     <TitleBox fontSize="calc(var(--title-font-size) * 1.3)">{title}</TitleBox>
   );
