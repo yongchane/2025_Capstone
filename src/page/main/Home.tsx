@@ -7,7 +7,7 @@ import SearchIcon from "../../assets/SearchHome.svg?react";
 import AtSearchIcon from "../../assets/AtSearchHome.svg?react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
-import BusStop from "./components/BusStop";
+// import BusStop from "./components/BusStop";
 import Place from "./components/Place";
 import { useFontSize } from "../../context/FontSizeContext";
 import { getNickname } from "../../utils/auth";
@@ -117,8 +117,8 @@ const Home = () => {
           ))}
         </div>
         <div className="mt-[40px] flex flex-col gap-[30px] w-full flex flex-col items-center">
-          <BusStop />
-          <Place />
+          {/* <BusStop /> */}
+          <Place isHome={true} />
         </div>
       </div>
     </HomeContainer>

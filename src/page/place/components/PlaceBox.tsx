@@ -3,26 +3,41 @@ import { usePlaceStore } from "../../../store/usePlaceStore";
 import { Place } from "../../../store/usePlaceStore";
 import { useInputPlace } from "../../../store/usePlaceStore";
 
-const PlaceBox = () => {
+interface PlaceBoxProps {
+  isHome?: boolean;
+}
+
+const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
   const { restaurant, cafe, bar, selectedCategory, recommendPlaces } =
     usePlaceStore();
   const { inputPlace, changeView } = useInputPlace();
+
   // 선택된 카테고리에 따라 표시할 데이터 결정
   const getDisplayData = (): Place[] => {
+    let data: Place[] = [];
     switch (selectedCategory) {
       case "전체":
-        return [...restaurant, ...cafe, ...bar];
+        data = [...restaurant, ...cafe, ...bar];
+        break;
       case "맞춤형 추천":
-        return recommendPlaces;
+        data = recommendPlaces;
+        break;
       case "음식점":
-        return restaurant;
+        data = restaurant;
+        break;
       case "카페":
-        return cafe;
+        data = cafe;
+        break;
       case "술집":
-        return bar;
+        data = bar;
+        break;
       default:
-        return [];
+        data = [];
+        break;
     }
+
+    // isHome이 true일 때는 최대 2개만 반환
+    return isHome ? data.slice(0, 2) : data;
   };
 
   const displayData = getDisplayData();
@@ -34,7 +49,7 @@ const PlaceBox = () => {
   console.log(changeView, "changeView 상태");
 
   return (
-    <PlaceGrid>
+    <PlaceGrid isHome={isHome}>
       {changeView === true ? (
         <>
           {inputPlace.length === 0 ? (
@@ -42,26 +57,29 @@ const PlaceBox = () => {
               검색 결과를 불러오는 중...
             </div>
           ) : (
-            inputPlace.map((place, index) => (
-              <PlaceBoxContainer key={`search-${index}`}>
-                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
-                  사진
-                </div>
-                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-                  <div
-                    className="font-medium text-sm truncate"
-                    title={place.placeName}
-                  >
-                    {place.placeName}
+            // isHome일 때는 inputPlace도 최대 2개만 표시
+            (isHome ? inputPlace.slice(0, 2) : inputPlace).map(
+              (place, index) => (
+                <PlaceBoxContainer key={`search-${index}`}>
+                  <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                    사진
                   </div>
-                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                    <PlaceAddressName title={place.addressName}>
-                      {place.addressName}
-                    </PlaceAddressName>
+                  <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                    <div
+                      className="font-medium text-sm truncate"
+                      title={place.placeName}
+                    >
+                      {place.placeName}
+                    </div>
+                    <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                      <PlaceAddressName title={place.addressName}>
+                        {place.addressName}
+                      </PlaceAddressName>
+                    </div>
                   </div>
-                </div>
-              </PlaceBoxContainer>
-            ))
+                </PlaceBoxContainer>
+              )
+            )
           )}
         </>
       ) : (
@@ -73,7 +91,7 @@ const PlaceBox = () => {
           ) : (
             displayData.map((place, index) => (
               <PlaceBoxContainer key={`${selectedCategory}-${index}`}>
-                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm rounded-[10px]">
                   사진
                 </div>
                 <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
@@ -100,10 +118,10 @@ const PlaceBox = () => {
 
 export default PlaceBox;
 
-const PlaceGrid = styled.div`
+const PlaceGrid = styled.div<{ isHome?: boolean }>`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: ${(props) => (props.isHome ? "10px" : "20px")};
   width: 100%;
 `;
 
