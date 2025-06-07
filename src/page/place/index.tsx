@@ -94,14 +94,23 @@ const Place = () => {
       // 입력된 검색어를 쉼표나 공백으로 분리하여 키워드 배열 생성
       const keywords = searchInput
         .split(/[,\s]+/) // 쉼표 또는 공백으로 분리
-        .filter((keyword) => keyword.trim().length > 0); // 빈 문자열 제거
+        .filter((keyword) => keyword.trim().length > 0) // 빈 문자열 제거
+        .map((keyword) => keyword.trim()); // 앞뒤 공백 제거
+
+      if (keywords.length === 0) {
+        alert("유효한 검색어를 입력해주세요.");
+        return;
+      }
+
+      console.log("처리된 키워드 배열:", keywords);
 
       const response = await SearchRecommend({
         keyword: keywords,
         xlocation,
         ylocation,
       });
-      console.log(response, "추천 응답");
+
+      console.log("추천 검색 응답:", response);
 
       // API 응답을 inputPlace에 저장
       setInputPlace(response);
@@ -110,7 +119,29 @@ const Place = () => {
       setChangeView(true);
     } catch (error) {
       console.error("추천 검색 실패:", error);
-      alert("검색에 실패했습니다. 다시 시도해주세요.");
+
+      // 더 자세한 에러 처리
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: {
+            status?: number;
+          };
+        };
+        if (axiosError.response?.status === 400) {
+          alert("잘못된 검색어입니다. 다시 입력해주세요.");
+        } else if (axiosError.response?.status === 401) {
+          alert("로그인이 필요합니다.");
+        } else if (
+          axiosError.response?.status &&
+          axiosError.response.status >= 500
+        ) {
+          alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+          alert("검색에 실패했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        alert("네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.");
+      }
     }
   };
 
