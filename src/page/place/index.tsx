@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import BackIcon from "../../assets/back.svg?react";
 import PlaceBox from "./components/PlaceBox";
 import Category from "./components/Category";
-import SearchIcon from "../../assets/search.svg?react";
+import SearchIcon from "../../assets/Search.svg?react";
 import { useNavigate } from "react-router-dom";
 import useLocationStore from "../../store/useLocationStore";
 import { SearchRestaurant, SearchCafe, SearchBar } from "../../api/SearchPlace";

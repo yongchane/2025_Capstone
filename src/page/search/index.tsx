@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 
 import InputPlace from "../../components/InputPlace";
 
-import BackIcon from "../../assets/Back.svg?react";
-import LocationIcon from "../../assets/Location.svg?react";
+import BackIcon from "../../assets/back.svg?react";
+import LocationIcon from "../../assets/location.svg?react";
 import ClockIcon from "../../assets/Clock.svg?react";
 
 import useLocationStore from "../../store/useLocationStore";
