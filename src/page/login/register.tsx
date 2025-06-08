@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title";
 import RegisterAPI from "../../api/Register";
 
-const RegisterPage = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState<string>("");
   const [age, setAge] = useState<string>("");
@@ -137,7 +137,7 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default Register;
 
 const InputBox = styled.input`
   width: 320px;
