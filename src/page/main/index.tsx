@@ -1,4 +1,4 @@
-import LogoIcon from "../../assets/logo.svg?react";
+import LogoIcon from "../../assets/AppLogo.svg?react";
 import Btn from "../../components/Btn";
 import { useNavigate } from "react-router-dom";
 

@@ -1,6 +1,5 @@
 import InputPlace from "../../components/InputPlace";
 import { useNavigate } from "react-router-dom";
-import styled from "@emotion/styled";
 import BackIcon from "../../assets/back.svg?react";
 import useLocationStore from "../../store/useLocationStore";
 import usePublicStore, {
