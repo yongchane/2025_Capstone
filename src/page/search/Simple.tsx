@@ -534,7 +534,7 @@ const Simple = () => {
                 ))}
                 <button
                   onClick={() => setShowOriginalTabs(!showOriginalTabs)}
-                  className="ml-[60px] w-[30px] h-[30px] bg-[#4F94BF] text-white rounded-full flex items-center justify-center hover:bg-[#3d7ba3] transition-colors"
+                  className="ml-auto w-[30px] h-[30px] bg-[#4F94BF] text-white rounded-full flex items-center justify-center hover:bg-[#3d7ba3] transition-colors"
                 >
                   ←
                 </button>
