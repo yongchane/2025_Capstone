@@ -37,12 +37,25 @@ const Home = () => {
   const navigate = useNavigate();
   const { currentFontSize } = useFontSize();
   const nickname = getNickname() || "사용자";
-  const { setXlocation, setYlocation } = useLocationStore();
+  const { setXlocation, setYlocation, xlocation, ylocation } =
+    useLocationStore();
   const { setRecommendPlaces, setHasRecommendation } = usePlaceStore();
   const { setAllPlace } = useInputPlace();
+
   useEffect(() => {
     handleCurrentLocation();
+    // 위치 정보가 이미 있다면 바로 PlaceAll 호출
+    if (xlocation !== null && ylocation !== null) {
+      handlePlaceAll(xlocation, ylocation);
+    }
   }, []);
+
+  // xlocation, ylocation이 변경될 때마다 handlePlaceAll 호출
+  useEffect(() => {
+    if (xlocation !== null && ylocation !== null) {
+      handlePlaceAll(xlocation, ylocation);
+    }
+  }, [xlocation, ylocation]);
 
   const handleCurrentLocation = async () => {
     try {
@@ -55,7 +68,7 @@ const Home = () => {
 
       // 위치 정보 로드 후 자동으로 PlaceAuto 호출
       await handleAutoRecommend(xlocation, ylocation);
-      await handlePlaceAll(xlocation, ylocation);
+      // handlePlaceAll은 useEffect에서 xlocation, ylocation 변경을 감지해서 자동 호출됨
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -96,12 +109,24 @@ const Home = () => {
       );
       const response = await PlaceAll({ xlocation, ylocation });
       console.log("🏠 Home PlaceAll API 응답:", response);
+      console.log("🏠 Home PlaceAll API 응답 타입:", typeof response);
+      console.log(
+        "🏠 Home PlaceAll API 응답 배열 확인:",
+        Array.isArray(response)
+      );
 
-      if (response && response.length > 0) {
+      if (response && Array.isArray(response) && response.length > 0) {
+        console.log("✅ setAllPlace 호출 전 - 데이터:", response);
         setAllPlace(response);
-        console.log("✅ allPlace 데이터 저장 완료 - 개수:", response.length);
+        console.log("✅ setAllPlace 호출 완료 - 개수:", response.length);
+        console.log("✅ 첫 번째 데이터 샘플:", response[0]);
       } else {
-        console.log("⚠️ PlaceAll API 응답이 비어있음");
+        console.log("⚠️ PlaceAll API 응답이 비어있거나 잘못된 형식");
+        console.log("⚠️ 응답 세부사항:", {
+          response,
+          isArray: Array.isArray(response),
+          length: response?.length,
+        });
       }
     } catch (error) {
       console.error("🏠 Home PlaceAll API 호출 실패:", error);

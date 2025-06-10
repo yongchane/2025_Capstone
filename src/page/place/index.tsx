@@ -11,6 +11,7 @@ import { usePlaceStore } from "../../store/usePlaceStore";
 import { useInputPlace } from "../../store/usePlaceStore";
 import SearchRecommend from "../../api/SearchRecommend";
 import PlaceAuto from "../../api/PlaceAuto";
+import PlaceSearch from "./PlaceSearch";
 const Place = () => {
   const navigate = useNavigate();
   const { xlocation, ylocation } = useLocationStore();
@@ -117,6 +118,9 @@ const Place = () => {
 
       // 검색 완료 후 changeView를 true로 설정
       setChangeView(true);
+
+      // API 완료 후에만 페이지 이동
+      // navigate("/place/search");
     } catch (error) {
       console.error("추천 검색 실패:", error);
 
@@ -216,7 +220,7 @@ const Place = () => {
           <PlaceBoxWrapper>
             <Category />
             <PlaceBoxWrapper>
-              <PlaceBox />
+              <PlaceSearch />
             </PlaceBoxWrapper>
           </PlaceBoxWrapper>
         ) : (

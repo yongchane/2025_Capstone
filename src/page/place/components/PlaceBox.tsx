@@ -53,74 +53,34 @@ const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
 
   return (
     <PlaceGrid isHome={isHome}>
-      {changeView === true ? (
-        <>
-          {!inputPlace ||
-          !Array.isArray(inputPlace) ||
-          inputPlace.length === 0 ? (
-            <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
-              {!inputPlace || !Array.isArray(inputPlace)
-                ? "검색 결과 형식 오류"
-                : "검색 결과를 불러오는 중..."}
-            </div>
-          ) : (
-            // isHome일 때는 inputPlace도 최대 2개만 표시
-            (isHome ? inputPlace.slice(0, 2) : inputPlace).map(
-              (place, index) => (
-                <PlaceBoxContainer key={`search-${index}`}>
-                  <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
-                    사진
-                  </div>
-                  <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-                    <div
-                      className="font-medium text-sm truncate"
-                      title={place?.placeName || "이름 없음"}
-                    >
-                      {place?.placeName || "이름 없음"}
-                    </div>
-                    <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                      <PlaceAddressName
-                        title={place?.addressName || "주소 없음"}
-                      >
-                        {place?.addressName || "주소 없음"}
-                      </PlaceAddressName>
-                    </div>
-                  </div>
-                </PlaceBoxContainer>
-              )
-            )
-          )}
-        </>
-      ) : (
-        <>
-          {displayData.length === 0 ? (
-            <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
-              {selectedCategory} 데이터를 불러오는 중...
-            </div>
-          ) : (
-            displayData.map((place, index) => (
-              <PlaceBoxContainer key={`${selectedCategory}-${index}`}>
-                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm rounded-[10px]">
-                  사진
+      <>
+        {displayData.length === 0 ? (
+          <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
+            {selectedCategory} 데이터를 불러오는 중...
+          </div>
+        ) : (
+          displayData.map((place, index) => (
+            <PlaceBoxContainer key={`${selectedCategory}-${index}`}>
+              <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm rounded-[10px]">
+                사진
+              </div>
+              <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                <div
+                  className="font-medium text-sm truncate"
+                  title={place.placeName}
+                >
+                  {place.placeName}
                 </div>
-                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-                  <div
-                    className="font-medium text-sm truncate"
-                    title={place.placeName}
-                  >
-                    {place.placeName}
-                  </div>
-                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                    <PlaceAddressName title={place.addressName}>
-                      {place.addressName}
-                    </PlaceAddressName>
-                  </div>
+                <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                  <PlaceAddressName title={place.addressName}>
+                    {place.addressName}
+                  </PlaceAddressName>
                 </div>
-              </PlaceBoxContainer>
-            ))
-          )}
-        </>
-      )}
+              </div>
+            </PlaceBoxContainer>
+          ))
+        )}
+      </>
     </PlaceGrid>
   );
 };

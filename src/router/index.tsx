@@ -11,6 +11,7 @@ const Login = lazy(
 const Place = lazy(
   () => import("../page/place") as Promise<{ default: React.ComponentType }>
 );
+
 const Search = lazy(
   () => import("../page/search") as Promise<{ default: React.ComponentType }>
 );
