@@ -10,6 +10,8 @@ import usePublicStore, {
 import { useState, useEffect } from "react";
 import TmapAuto from "../../api/TmapAuto";
 
+// 유지보수 필요
+
 const Simple = () => {
   const navigate = useNavigate();
   const { start, end, setPreferred, startX, startY, endX, endY } =
