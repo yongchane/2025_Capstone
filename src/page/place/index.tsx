@@ -161,7 +161,7 @@ const Place = () => {
       if (response.status === 200) {
         console.log("✅ 200 응답 받음 - 자동 추천 결과 표시");
 
-        // API 응답 데이터를 inputPlace에 저장
+        // API 응답 데이터를 inputPlace에 저장 (response.data가 아닌 response.data)
         setInputPlace(response.data);
 
         // changeView를 true로 설정하여 검색 결과 화면으로 전환

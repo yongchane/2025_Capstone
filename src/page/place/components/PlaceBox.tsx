@@ -10,8 +10,7 @@ interface PlaceBoxProps {
 const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
   const { restaurant, cafe, bar, selectedCategory, recommendPlaces } =
     usePlaceStore();
-  const { inputPlace, changeView, allPlace } = useInputPlace();
-
+  const { inputPlace, changeView } = useInputPlace();
   // 선택된 카테고리에 따라 표시할 데이터 결정
   const getDisplayData = (): Place[] => {
     let data: Place[] = [];
@@ -42,71 +41,54 @@ const PlaceBox = ({ isHome = false }: PlaceBoxProps) => {
 
   const displayData = getDisplayData();
 
-  console.log(restaurant, cafe, bar, "restaurant, cafe, bar");
-  console.log(selectedCategory, "선택된 카테고리");
-  console.log(displayData, "표시될 데이터");
-  console.log(inputPlace, "inputPlace");
-  console.log(changeView, "changeView 상태");
-  console.log(allPlace, "allPlace");
-
-  // Home에서는 allPlace 데이터를 우선 표시
-  if (isHome && allPlace && allPlace.length > 0) {
-    return (
-      <PlaceGrid isHome={isHome}>
-        {allPlace.slice(0, 2).map((place, index) => (
-          <PlaceBoxContainer key={`home-all-${index}`}>
-            <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm rounded-[10px]">
-              사진
-            </div>
-            <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-              <div
-                className="font-medium text-sm truncate"
-                title={place.placeName}
-              >
-                {place.placeName}
-              </div>
-              <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                <PlaceAddressName title={place.addressName}>
-                  {place.addressName}
-                </PlaceAddressName>
-              </div>
-            </div>
-          </PlaceBoxContainer>
-        ))}
-      </PlaceGrid>
-    );
-  }
+  console.log("=== PlaceBox 렌더링 디버깅 ===");
+  console.log("changeView:", changeView);
+  console.log("inputPlace:", inputPlace);
+  console.log("inputPlace.length:", inputPlace?.length);
+  console.log("Array.isArray(inputPlace):", Array.isArray(inputPlace));
+  console.log("selectedCategory:", selectedCategory);
+  console.log("displayData:", displayData);
+  console.log("isHome:", isHome);
+  console.log("===============================");
 
   return (
     <PlaceGrid isHome={isHome}>
       {changeView === true ? (
         <>
-          {inputPlace.length === 0 ? (
+          {!inputPlace ||
+          !Array.isArray(inputPlace) ||
+          inputPlace.length === 0 ? (
             <div className="flex items-center justify-center w-full h-[140px] text-gray-400 col-span-2">
-              검색 결과를 불러오는 중...
+              {!inputPlace || !Array.isArray(inputPlace)
+                ? "검색 결과 형식 오류"
+                : "검색 결과를 불러오는 중..."}
             </div>
           ) : (
             // isHome일 때는 inputPlace도 최대 2개만 표시
-            (isHome ? allPlace.slice(0, 2) : allPlace).map((place, index) => (
-              <PlaceBoxContainer key={`search-${index}`}>
-                <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
-                  사진
-                </div>
-                <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
-                  <div
-                    className="font-medium text-sm truncate"
-                    title={place.placeName}
-                  >
-                    {place.placeName}
+            (isHome ? inputPlace.slice(0, 2) : inputPlace).map(
+              (place, index) => (
+                <PlaceBoxContainer key={`search-${index}`}>
+                  <div className="w-full h-[60%] bg-[#F5F5F5] flex items-center justify-center text-gray-400 text-sm">
+                    사진
                   </div>
-                  <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
-                    <PlaceAddressName title={place.addressName}>
-                      {place.addressName}
-                    </PlaceAddressName>
+                  <div className="flex flex-col pl-[10px] pt-[5px] flex-1">
+                    <div
+                      className="font-medium text-sm truncate"
+                      title={place?.placeName || "이름 없음"}
+                    >
+                      {place?.placeName || "이름 없음"}
+                    </div>
+                    <div className="flex flex-col  gap-[2px] text-gray-400 mt-1">
+                      <PlaceAddressName
+                        title={place?.addressName || "주소 없음"}
+                      >
+                        {place?.addressName || "주소 없음"}
+                      </PlaceAddressName>
+                    </div>
                   </div>
-                </div>
-              </PlaceBoxContainer>
-            ))
+                </PlaceBoxContainer>
+              )
+            )
           )}
         </>
       ) : (
