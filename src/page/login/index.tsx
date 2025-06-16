@@ -32,24 +32,20 @@ const Login = () => {
         nickname: nickname.trim(),
         password: password.trim(),
       });
-      console.log("로그인 성공:", response, "nickname", nickname);
 
       // 토큰 저장 (유틸리티 함수 사용)
       saveTokens(response.token, response.refreshToken, nickname.trim());
 
       // 로그인 성공 시 메인 페이지로 이동
-      console.log("페이지 이동 중...");
       navigate("/font", { replace: true }); // replace: true로 뒤로가기 방지
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("알 수 없는 오류가 발생했습니다.");
+        setErrorMessage("오류가 발생했습니다.");
       }
-      console.error("로그인 실패:", error);
     } finally {
       setIsLoading(false);
-      console.log("로그인 완료확인", isLoading);
     }
   };
 
